@@ -1,0 +1,282 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="InsuranceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Accident">
+    <Key>
+      <PropertyRef Name="ReportNumber" />
+    </Key>
+    <Property Name="ReportNumber" Type="int" Nullable="false" />
+    <Property Name="VehicleId" Type="uniqueidentifier" />
+    <Property Name="UserId" Type="uniqueidentifier" />
+    <Property Name="Description" Type="nvarchar(max)" />
+    <Property Name="Location" Type="varchar" MaxLength="50" />
+    <Property Name="Date" Type="datetime" />
+    <Property Name="CreateDate" Type="datetime" />
+    <Property Name="ModifyDate" Type="datetime" />
+    <Property Name="DeleteDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Agent">
+    <Key>
+      <PropertyRef Name="AgentId" />
+    </Key>
+    <Property Name="AgentId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="50" />
+    <Property Name="Phone" Type="nvarchar" MaxLength="50" />
+    <Property Name="Address" Type="nvarchar" MaxLength="50" />
+    <Property Name="Email" Type="nvarchar" MaxLength="50" />
+    <Property Name="ModifyDate" Type="datetime" />
+    <Property Name="CreateDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Claim">
+    <Key>
+      <PropertyRef Name="ClaimId" />
+    </Key>
+    <Property Name="ClaimId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="AccidentId" Type="uniqueidentifier" />
+    <Property Name="Status" Type="nvarchar" MaxLength="50" />
+    <Property Name="ModifyDate" Type="datetime" />
+    <Property Name="CreateDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Order">
+    <Key>
+      <PropertyRef Name="OrderId" />
+    </Key>
+    <Property Name="OrderId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="PolicyId" Type="uniqueidentifier" />
+    <Property Name="UserId" Type="uniqueidentifier" />
+    <Property Name="CreditCardNumber" Type="nvarchar" MaxLength="50" />
+    <Property Name="Amount" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="ModifyDate" Type="datetime" />
+    <Property Name="CreateDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Participant">
+    <Key>
+      <PropertyRef Name="ReportNumber" />
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="ReportNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="UserId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="DamageAmount" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="ModifyDate" Type="datetime" />
+    <Property Name="CreateDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Policy">
+    <Key>
+      <PropertyRef Name="PolicyId" />
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="PolicyId" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="UserId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="LimitAmount" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="ModifyDate" Type="datetime" />
+    <Property Name="CreateDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="FirstName" Type="nvarchar" MaxLength="50" />
+    <Property Name="LastName" Type="nvarchar" MaxLength="50" />
+    <Property Name="Address" Type="nvarchar" MaxLength="50" />
+    <Property Name="City" Type="nvarchar" MaxLength="50" />
+    <Property Name="State" Type="nvarchar" MaxLength="50" />
+    <Property Name="Zip" Type="nvarchar" MaxLength="50" />
+    <Property Name="Dob" Type="datetime" />
+    <Property Name="SSN" Type="nvarchar" MaxLength="50" />
+    <Property Name="Gender" Type="char" MaxLength="10" />
+    <Property Name="Email" Type="nvarchar" MaxLength="50" />
+    <Property Name="Data" Type="nvarchar" MaxLength="50" />
+    <Property Name="ModifyDate" Type="datetime" />
+    <Property Name="CreateDate" Type="datetime" />
+    <Property Name="SSN_Encrypted" Type="varbinary" MaxLength="128" />
+  </EntityType>
+  <EntityType Name="UserVehicle">
+    <Key>
+      <PropertyRef Name="UserId" />
+      <PropertyRef Name="VehicleId" />
+    </Key>
+    <Property Name="UserId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="VehicleId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="ModifyDate" Type="datetime" />
+    <Property Name="CreateDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Vehicle">
+    <Key>
+      <PropertyRef Name="VehicleId" />
+    </Key>
+    <Property Name="VehicleId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="VIN" Type="nvarchar" MaxLength="50" />
+    <Property Name="License" Type="nvarchar" MaxLength="50" />
+    <Property Name="Make" Type="nvarchar" MaxLength="50" />
+    <Property Name="Model" Type="nvarchar" MaxLength="50" />
+    <Property Name="Year" Type="int" />
+    <Property Name="Value" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="PurchaseDate" Type="datetime" />
+    <Property Name="CreateDate" Type="datetime" />
+    <Property Name="ModifyDate" Type="datetime" />
+    <Property Name="DeleteDate" Type="datetime" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'Insurance.dbo.vAgentUser' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="vAgentUser">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="LastName" Type="nvarchar" MaxLength="50" />
+    <Property Name="Address" Type="nvarchar" MaxLength="50" />
+    <Property Name="FirstName" Type="nvarchar" MaxLength="50" />
+    <Property Name="City" Type="nvarchar" MaxLength="50" />
+    <Property Name="State" Type="nvarchar" MaxLength="50" />
+    <Property Name="Zip" Type="nvarchar" MaxLength="50" />
+    <Property Name="Dob" Type="datetime" />
+    <Property Name="SSN" Type="nvarchar" MaxLength="50" />
+    <Property Name="Gender" Type="char" MaxLength="10" />
+    <Property Name="Email" Type="nvarchar" MaxLength="50" />
+    <Property Name="Data" Type="nvarchar" MaxLength="50" />
+    <Property Name="ModifyDate" Type="datetime" />
+    <Property Name="CreateDate" Type="datetime" />
+  </EntityType>
+  <Association Name="FK_Accident_User">
+    <End Role="User" Type="Self.User" Multiplicity="0..1" />
+    <End Role="Accident" Type="Self.Accident" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Accident">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Accident_Vehicle">
+    <End Role="Vehicle" Type="Self.Vehicle" Multiplicity="0..1" />
+    <End Role="Accident" Type="Self.Accident" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Vehicle">
+        <PropertyRef Name="VehicleId" />
+      </Principal>
+      <Dependent Role="Accident">
+        <PropertyRef Name="VehicleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Order_User">
+    <End Role="User" Type="Self.User" Multiplicity="0..1" />
+    <End Role="Order" Type="Self.Order" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Order">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Participant_User">
+    <End Role="User" Type="Self.User" Multiplicity="1" />
+    <End Role="Participant" Type="Self.Participant" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Participant">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Policy_User">
+    <End Role="User" Type="Self.User" Multiplicity="1" />
+    <End Role="Policy" Type="Self.Policy" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Policy">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserVehicle_User">
+    <End Role="User" Type="Self.User" Multiplicity="1" />
+    <End Role="UserVehicle" Type="Self.UserVehicle" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="UserVehicle">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserVehicle_Vehicle">
+    <End Role="Vehicle" Type="Self.Vehicle" Multiplicity="1" />
+    <End Role="UserVehicle" Type="Self.UserVehicle" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Vehicle">
+        <PropertyRef Name="VehicleId" />
+      </Principal>
+      <Dependent Role="UserVehicle">
+        <PropertyRef Name="VehicleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="InsuranceModelStoreContainer">
+    <EntitySet Name="Accident" EntityType="Self.Accident" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Agent" EntityType="Self.Agent" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Claim" EntityType="Self.Claim" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Order" EntityType="Self.Order" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Participant" EntityType="Self.Participant" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Policy" EntityType="Self.Policy" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserVehicle" EntityType="Self.UserVehicle" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Vehicle" EntityType="Self.Vehicle" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="vAgentUser" EntityType="Self.vAgentUser" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [vAgentUser].[UserId] AS [UserId], 
+    [vAgentUser].[LastName] AS [LastName], 
+    [vAgentUser].[Address] AS [Address], 
+    [vAgentUser].[FirstName] AS [FirstName], 
+    [vAgentUser].[City] AS [City], 
+    [vAgentUser].[State] AS [State], 
+    [vAgentUser].[Zip] AS [Zip], 
+    [vAgentUser].[Dob] AS [Dob], 
+    [vAgentUser].[SSN] AS [SSN], 
+    [vAgentUser].[Gender] AS [Gender], 
+    [vAgentUser].[Email] AS [Email], 
+    [vAgentUser].[Data] AS [Data], 
+    [vAgentUser].[ModifyDate] AS [ModifyDate], 
+    [vAgentUser].[CreateDate] AS [CreateDate]
+    FROM [dbo].[vAgentUser] AS [vAgentUser]</DefiningQuery>
+    </EntitySet>
+    <AssociationSet Name="FK_Accident_User" Association="Self.FK_Accident_User">
+      <End Role="User" EntitySet="User" />
+      <End Role="Accident" EntitySet="Accident" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Accident_Vehicle" Association="Self.FK_Accident_Vehicle">
+      <End Role="Vehicle" EntitySet="Vehicle" />
+      <End Role="Accident" EntitySet="Accident" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Order_User" Association="Self.FK_Order_User">
+      <End Role="User" EntitySet="User" />
+      <End Role="Order" EntitySet="Order" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Participant_User" Association="Self.FK_Participant_User">
+      <End Role="User" EntitySet="User" />
+      <End Role="Participant" EntitySet="Participant" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Policy_User" Association="Self.FK_Policy_User">
+      <End Role="User" EntitySet="User" />
+      <End Role="Policy" EntitySet="Policy" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserVehicle_User" Association="Self.FK_UserVehicle_User">
+      <End Role="User" EntitySet="User" />
+      <End Role="UserVehicle" EntitySet="UserVehicle" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserVehicle_Vehicle" Association="Self.FK_UserVehicle_Vehicle">
+      <End Role="Vehicle" EntitySet="Vehicle" />
+      <End Role="UserVehicle" EntitySet="UserVehicle" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

@@ -1,0 +1,1165 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+		"adminUsername": {
+            "defaultValue": "wsadmin",
+            "type": "String"
+        },
+		"adminPassword": {
+            "defaultValue": "p@ssword1rocks",
+            "type": "String"
+        },
+		"sqlservername": {
+            "defaultValue": "azuresecurity-abc",
+            "type": "String"
+        },
+        "databaseName": {
+            "defaultValue": "Insurance",
+            "type": "String"
+        },
+		"storageAccountName": {
+            "defaultValue": "azuresecurityabc",
+            "type": "String"
+        }        
+    },
+    "variables": {},
+    "resources": [
+		{
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Sql/servers/azuresecurity'.",
+            "type": "Microsoft.Sql/servers",
+            "kind": "v12.0",
+            "name": "[parameters('sqlservername')]",
+            "apiVersion": "2015-05-01-preview",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "administratorLogin": "[parameters('adminUsername')]",
+				"administratorLoginPassword": "[parameters('adminPassword')]",
+                "version": "12.0"
+            },
+            "dependsOn": []
+        },		
+		{
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Sql/servers/azuresecurity/databases/Insurance'.",
+            "type": "Microsoft.Sql/servers/databases",
+            "kind": "v12.0,user",
+            "name": "[concat(parameters('sqlservername'), '/', 'SampleDB')]",
+            "apiVersion": "2014-04-01-preview",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "databaseId": "cb0f2743-17a4-4b2e-9f91-8b274bfedf72",
+                "edition": "Basic",
+                "status": "Online",
+                "serviceLevelObjective": "Basic",
+                "collation": "SQL_Latin1_General_CP1_CI_AS",
+                "maxSizeBytes": "2147483648",
+                "creationDate": "2017-12-21T18:57:11.95Z",
+                "currentServiceObjectiveId": "dd6d99bb-f193-4ec1-86f2-43d3bccbc49c",
+                "requestedServiceObjectiveId": "dd6d99bb-f193-4ec1-86f2-43d3bccbc49c",
+                "requestedServiceObjectiveName": "Basic",
+                "sampleName": null,
+                "defaultSecondaryLocation": "East US 2",
+                "earliestRestoreDate": "2018-01-05T00:00:00Z",
+                "elasticPoolName": null,
+                "containmentState": 2,
+                "readScale": "Disabled",
+                "failoverGroupId": null,
+                "zoneRedundant": false,
+                "isUpgradeRequested": false
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('sqlservername'))]"
+            ]
+        },
+		{
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Network/networkInterfaces/db-1-nic-53a65199dc764b4fb23478c18f856d13'.",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "db-1-nic",
+            "apiVersion": "2017-06-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "67a69ab9-cde0-4c6f-bcfb-a70c2a9ade8b",
+                "ipConfigurations": [
+                    {
+                        "name": "77ef5e0cce1542dfb317456dfed42e8f",
+                        "etag": "W/\"5389fc4e-c7a6-415d-9338-4b710d109999\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "10.1.0.4",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": null,
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'dbVnet', 'default')]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": [],
+                    "appliedDnsServers": [],
+                    "internalDomainNameSuffix": "s2pu0oo1owqulprzri5vilj4eg.gx.internal.cloudapp.net"
+                },
+                "macAddress": "00-0D-3A-93-31-E0",
+                  "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false,
+                "primary": true,
+                "virtualMachine": {
+                    "id": "[resourceId('Microsoft.Compute/virtualMachines', 'db-1')]"
+                }
+            },
+            "dependsOn": [                
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'dbVnet', 'default')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Network/networkInterfaces/paw-1486'.",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "paw-1-nic",
+            "apiVersion": "2017-06-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "84ea17a9-cd99-4a06-a5ca-e33ed9fd7759",
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "etag": "W/\"5097e4ef-2cdc-4e30-bb64-267d5070d4ad\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "10.0.0.4",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'paw-1-ip')]"
+                            },
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'mainVNet', 'default')]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": [],
+                    "appliedDnsServers": [],
+                    "internalDomainNameSuffix": "q0jvf5dqgtpefgppulgsr5uusb.gx.internal.cloudapp.net"
+                },
+                "macAddress": "00-0D-3A-91-A8-93",
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false,
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'paw-1-nsg')]"
+                },
+                "primary": true,
+                "virtualMachine": {
+                    "id": "[resourceId('Microsoft.Compute/virtualMachines', 'paw-1')]"
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', 'paw-1-ip')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'mainVNet', 'default')]"                            
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Network/networkInterfaces/web-1-nic-22ba9cfb437341f8bea4a954d0be0f5b'.",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "web-1-nic",
+            "apiVersion": "2017-06-01",
+            "location": "centralus",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "fb02f4b7-f22f-43a6-8e8f-dd9762048573",
+                "ipConfigurations": [
+                    {
+                        "name": "5233bff7f9b543189c78f386fd13e7bc",
+                        "etag": "W/\"31f54c60-d037-4326-bd73-403586e35a02\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "10.2.0.4",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'web-1-ip')]"
+                            },
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'webVNet', 'default')]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": [],
+                    "appliedDnsServers": [],
+                    "internalDomainNameSuffix": "ljtbbjulyu4etnfllzjy4y1rfa.gx.internal.cloudapp.net"
+                },
+                "macAddress": "00-0D-3A-92-C5-2C",
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false,
+                "primary": true,
+                "virtualMachine": {
+                    "id": "[resourceId('Microsoft.Compute/virtualMachines', 'web-1')]"
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', 'web-1-ip')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'webVNet', 'default')]"                
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Compute/virtualMachines/db-1'.",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "db-1",
+            "apiVersion": "2017-03-30",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Basic_A2"
+                },
+				"osProfile": {
+                    "computerName": "db-1",
+                    "adminUsername": "[parameters('adminUsername')]",
+					"adminPassword": "[parameters('adminPassword')]",
+                    "windowsConfiguration": {
+                        "provisionVMAgent": true,
+                        "enableAutomaticUpdates": true
+                    },
+                    "secrets": []
+                },
+                "storageProfile": {
+					"imageReference": {
+						"publisher": "MicrosoftSQLServer",
+						"offer": "SQL2016SP1-WS2016",
+						"sku": "Enterprise",
+						"version": "latest"
+					},
+                    "osDisk": {
+                        "osType": "Windows",
+                        "name": "db-1",
+                        "createOption": "FromImage",
+                        "vhd": {
+                            "uri": "[concat('https', '://', parameters('storageAccountName'), '.blob.core.windows.net', concat('/vhds/', 'db-1','20171218184106.vhd'))]"
+                        },
+                        "caching": "ReadWrite",
+                        "diskSizeGB": 127
+                    },
+                    "dataDisks": []
+                },    
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', 'db-1-nic')]",
+                            "properties": {
+                                "primary": true
+                            }
+                        }
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+            ]
+        },     
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Compute/virtualMachines/paw-1'.",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "paw-1",
+            "apiVersion": "2017-03-30",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_DS1_v2"
+                },
+				"osProfile": {
+                    "computerName": "paw-1",
+                    "adminUsername": "[parameters('adminUsername')]",
+					"adminPassword": "[parameters('adminPassword')]",
+                    "windowsConfiguration": {
+                        "provisionVMAgent": true,
+                        "enableAutomaticUpdates": true
+                    },
+                    "secrets": []
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2016-Datacenter",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Windows",
+                        "name": "paw-1",
+                        "createOption": "FromImage",
+                        "vhd": {
+                            "uri": "[concat('https', '://', parameters('storageAccountName'), '.blob.core.windows.net', concat('/vhds/', 'paw-1','20171218184106.vhd'))]"
+                        },
+                        "caching": "ReadWrite",
+                        "diskSizeGB": 127
+                    },
+                    "dataDisks": []
+                },                
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', 'paw-1-nic')]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[concat('https', '://', parameters('storageAccountName'), '.blob.core.windows.net', '/')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Compute/virtualMachines/web-1'.",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "web-1",
+            "apiVersion": "2017-03-30",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_A1"
+                },
+				"osProfile": {
+                    "computerName": "web-1",
+                    "adminUsername": "[parameters('adminUsername')]",
+					"adminPassword": "[parameters('adminPassword')]",
+                    "windowsConfiguration": {
+                        "provisionVMAgent": true,
+                        "enableAutomaticUpdates": true
+                    },
+                    "secrets": []
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2016-Datacenter",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Windows",
+                        "name": "web-1",
+                        "createOption": "FromImage",
+                        "vhd": {
+                            "uri": "[concat('https', '://', parameters('storageAccountName'), '.blob.core.windows.net', concat('/vhds/', 'web-1','20171218184106.vhd'))]"
+                        },
+                        "caching": "ReadWrite",
+                        "diskSizeGB": 127
+                    },
+                    "dataDisks": []
+                },    
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', 'web-1-nic')]",
+                            "properties": {
+                                "primary": true
+                            }
+                        }
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.KeyVault/vaults/CloudSecurityVault'.",
+            "type": "Microsoft.KeyVault/vaults",
+            "name": "CloudSecurityVault",
+            "apiVersion": "2015-06-01",
+            "location": "[resourceGroup().location]",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "sku": {
+                    "family": "A",
+                    "name": "Standard"
+                },
+                "tenantId": "[subscription().tenantId]",
+                "accessPolicies": [
+                    {
+                        "tenantId": "[subscription().tenantId]",
+                        "objectId": "c1c8abcf-aa1f-443b-aa47-93df8879d9b2",
+                        "permissions": {
+                            "keys": [
+                                "Get",
+                                "List",
+                                "Update",
+                                "Create",
+                                "Import",
+                                "Delete",
+                                "Recover",
+                                "Backup",
+                                "Restore"
+                            ],
+                            "secrets": [
+                                "Get",
+                                "List",
+                                "Set",
+                                "Delete",
+                                "Recover",
+                                "Backup",
+                                "Restore"
+                            ]
+                        }
+                    }
+                ],
+                "enabledForDeployment": false
+            },
+            "dependsOn": []
+        },        
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Network/networkSecurityGroups/DbTrafficOnly'.",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "DbTrafficOnly",
+            "apiVersion": "2017-06-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "b0319696-5107-4745-ba23-d1523dc9a307",
+                "securityRules": [],
+                "defaultSecurityRules": [
+                    {
+                        "name": "AllowVnetInBound",
+                        "etag": "W/\"af8e255a-4c43-41ed-a789-cd190085d553\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow inbound traffic from all VMs in VNET",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 65000,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowAzureLoadBalancerInBound",
+                        "etag": "W/\"af8e255a-4c43-41ed-a789-cd190085d553\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow inbound traffic from azure load balancer",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "AzureLoadBalancer",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 65001,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "DenyAllInBound",
+                        "etag": "W/\"af8e255a-4c43-41ed-a789-cd190085d553\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Deny all inbound traffic",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 65500,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowVnetOutBound",
+                        "etag": "W/\"af8e255a-4c43-41ed-a789-cd190085d553\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow outbound traffic from all VMs to all VMs in VNET",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 65000,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowInternetOutBound",
+                        "etag": "W/\"af8e255a-4c43-41ed-a789-cd190085d553\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow outbound traffic from all VMs to Internet",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "Internet",
+                            "access": "Allow",
+                            "priority": 65001,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "DenyAllOutBound",
+                        "etag": "W/\"af8e255a-4c43-41ed-a789-cd190085d553\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Deny all outbound traffic",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 65500,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ]
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Network/networkSecurityGroups/paw-1-nsg'.",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "paw-1-nsg",
+            "apiVersion": "2017-06-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "9d7fc98e-e718-4173-90ce-3049baa3f86c",
+                "securityRules": [],
+                "defaultSecurityRules": [
+					{
+                        "name": "RDP",
+                        "etag": "W/\"8567f93c-619a-4bde-98b5-4c8254039562\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "3389",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1004,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowVnetInBound",
+                        "etag": "W/\"7db38e1c-734b-4ea9-b3c7-39c34aa0d0a3\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow inbound traffic from all VMs in VNET",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 65000,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowAzureLoadBalancerInBound",
+                        "etag": "W/\"7db38e1c-734b-4ea9-b3c7-39c34aa0d0a3\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow inbound traffic from azure load balancer",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "AzureLoadBalancer",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 65001,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "DenyAllInBound",
+                        "etag": "W/\"7db38e1c-734b-4ea9-b3c7-39c34aa0d0a3\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Deny all inbound traffic",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 65500,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowVnetOutBound",
+                        "etag": "W/\"7db38e1c-734b-4ea9-b3c7-39c34aa0d0a3\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow outbound traffic from all VMs to all VMs in VNET",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 65000,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowInternetOutBound",
+                        "etag": "W/\"7db38e1c-734b-4ea9-b3c7-39c34aa0d0a3\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow outbound traffic from all VMs to Internet",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "Internet",
+                            "access": "Allow",
+                            "priority": 65001,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "DenyAllOutBound",
+                        "etag": "W/\"7db38e1c-734b-4ea9-b3c7-39c34aa0d0a3\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Deny all outbound traffic",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 65500,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ]
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Network/networkSecurityGroups/WebTrafficOnly'.",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "WebTrafficOnly",
+            "apiVersion": "2017-06-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "2e79c5bc-dd36-4bd5-a232-e819af588d9f",
+                "securityRules": [],
+                "defaultSecurityRules": [
+                    {
+                        "name": "AllowVnetInBound",
+                        "etag": "W/\"d4c626a1-f95d-4ac0-afeb-98103c8f025d\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow inbound traffic from all VMs in VNET",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 65000,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowAzureLoadBalancerInBound",
+                        "etag": "W/\"d4c626a1-f95d-4ac0-afeb-98103c8f025d\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow inbound traffic from azure load balancer",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "AzureLoadBalancer",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 65001,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "DenyAllInBound",
+                        "etag": "W/\"d4c626a1-f95d-4ac0-afeb-98103c8f025d\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Deny all inbound traffic",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 65500,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowVnetOutBound",
+                        "etag": "W/\"d4c626a1-f95d-4ac0-afeb-98103c8f025d\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow outbound traffic from all VMs to all VMs in VNET",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 65000,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowInternetOutBound",
+                        "etag": "W/\"d4c626a1-f95d-4ac0-afeb-98103c8f025d\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow outbound traffic from all VMs to Internet",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "Internet",
+                            "access": "Allow",
+                            "priority": 65001,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "DenyAllOutBound",
+                        "etag": "W/\"d4c626a1-f95d-4ac0-afeb-98103c8f025d\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Deny all outbound traffic",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 65500,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ]
+            },
+            "dependsOn": []
+        },                                
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Network/publicIPAddresses/paw-1-ip'.",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "paw-1-ip",
+            "apiVersion": "2017-06-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "8412a76a-63cd-46e2-bedd-a5572961eb94",
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Dynamic",
+                "idleTimeoutInMinutes": 4
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Network/publicIPAddresses/web-1-ip'.",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "web-1-ip",
+            "apiVersion": "2017-06-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "0088a0dc-0d4f-4ba6-9490-8a6e52996168",
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Dynamic",
+                "idleTimeoutInMinutes": 4
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Network/virtualNetworks/dbVNet'.",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "dbVnet",
+            "apiVersion": "2017-06-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "394d1f97-75db-45a1-be39-8a3f542d3e26",
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.1.0.0/24"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "default",
+                        "etag": "W/\"731a0e9d-40e4-4173-a571-b3f964a7572d\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "addressPrefix": "10.1.0.0/24",
+                            "networkSecurityGroup": null
+                        }
+                    }
+                ],
+                "virtualNetworkPeerings": [
+                    {
+                        "name": "db_to_main",
+                        "etag": "W/\"731a0e9d-40e4-4173-a571-b3f964a7572d\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "peeringState": "Connected",
+                            "remoteVirtualNetwork": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks', 'mainVNet')]"
+                            },
+                            "allowVirtualNetworkAccess": true,
+                            "allowForwardedTraffic": true,
+                            "allowGatewayTransit": true,
+                            "useRemoteGateways": false
+                        }
+                    }
+                ]
+            },
+            "dependsOn": [                
+                "[resourceId('Microsoft.Network/virtualNetworks', 'mainVNet')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Network/virtualNetworks/mainVNet'.",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "mainVNet",
+            "apiVersion": "2017-06-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "fc529386-3470-42de-99ef-a2cd28fe9491",
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.0.0.0/16"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "default",
+                        "etag": "W/\"e27dd952-af71-4a8e-bb29-786dff610dbf\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "addressPrefix": "10.0.0.0/24"
+                        }
+                    }
+                ]
+            },
+            "dependsOn": [                
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Network/virtualNetworks/webVNet'.",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "webVNet",
+            "apiVersion": "2017-06-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "a610665a-c58b-493c-b4ab-5e538f637128",
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.2.0.0/24"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "default",
+                        "etag": "W/\"a936c3c5-bd1d-46ef-bb03-cbd36deed53a\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "addressPrefix": "10.2.0.0/24",
+                            "networkSecurityGroup": null
+                        }
+                    }
+                ]                
+            },
+            "dependsOn": [
+                
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.RecoveryServices/vaults/VMBackupVault'.",
+            "type": "Microsoft.RecoveryServices/vaults",
+            "sku": {
+                "name": "RS0",
+                "tier": "Standard"
+            },
+            "name": "VMBackupVault",
+            "apiVersion": "2016-06-01",
+            "location": "centralus",
+            "scale": null,
+            "properties": {},
+            "dependsOn": []
+        },        
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/azuresecuritycloudworkshop/providers/Microsoft.Storage/storageAccounts/azuresecuritycloudwor239'.",
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccountName')]",
+            "apiVersion": "2017-06-01",
+            "location": "centralus",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": false,
+                "encryption": {
+                    "services": {
+                        "file": {
+                            "enabled": true
+                        },
+                        "blob": {
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                }
+            },
+            "dependsOn": []
+        },
+                {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Network/virtualNetworks/dbVNet/subnets/default'.",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "name": "[concat('dbVnet', '/', 'default')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "addressPrefix": "10.1.0.0/24",
+                "networkSecurityGroup": null
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'dbVnet')]"                
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Network/virtualNetworks/dbVNet/virtualNetworkPeerings/db_to_main'.",
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "name": "[concat('dbVnet', '/', 'db_to_main')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "peeringState": "Connected",
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', 'mainVNet')]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": true,
+                "allowGatewayTransit": true,
+                "useRemoteGateways": false
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'dbVnet')]",
+                "[resourceId('Microsoft.Network/virtualNetworks', 'mainVNet')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Network/virtualNetworks/mainVNet/subnets/default'.",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "name": "[concat('mainVNet', '/', 'default')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "addressPrefix": "10.0.0.0/24"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'mainVNet')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Network/virtualNetworks/mainVNet/virtualNetworkPeerings/main_to_db'.",
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "name": "[concat('mainVNet', '/', 'main_to_db')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "peeringState": "Connected",
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', 'dbVnet')]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": true,
+                "allowGatewayTransit": true,
+                "useRemoteGateways": false
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'mainVNet')]",
+                "[resourceId('Microsoft.Network/virtualNetworks', 'dbVnet')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Network/virtualNetworks/mainVNet/virtualNetworkPeerings/main_to_web'.",
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "name": "[concat('mainVNet', '/', 'main_to_web')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "peeringState": "Connected",
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', 'webVNet')]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": true,
+                "allowGatewayTransit": true,
+                "useRemoteGateways": false
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'mainVNet')]",
+                "[resourceId('Microsoft.Network/virtualNetworks', 'webVNet')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Network/virtualNetworks/webVNet/subnets/default'.",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "name": "[concat('webVNet', '/', 'default')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "addressPrefix": "10.2.0.0/24",
+                "networkSecurityGroup": null
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'webVNet')]"                
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/AzureSecurityCloudWorkshop/providers/Microsoft.Network/virtualNetworks/webVNet/virtualNetworkPeerings/web_to_main'.",
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "name": "[concat('webVNet', '/', 'web_to_main')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "peeringState": "Connected",
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', 'mainVNet')]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": true,
+                "allowGatewayTransit": true,
+                "useRemoteGateways": false
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'webVNet')]",
+                "[resourceId('Microsoft.Network/virtualNetworks', 'mainVNet')]"
+            ]
+        },
+		{
+		  "type": "Microsoft.Compute/virtualMachines/extensions",
+		  "name": "[concat('web-1','/', 'dscExtension')]",
+		  "apiVersion": "2015-05-01-preview",
+		  "location": "[resourceGroup().location]",
+		  "dependsOn": [
+			"[concat('Microsoft.Compute/virtualMachines/', 'web-1')]"
+		  ],
+		  "properties": {
+			"publisher": "Microsoft.Powershell",
+			"type": "DSC",
+			"typeHandlerVersion": "2.19",
+			"autoUpgradeMinorVersion": true,
+			"settings": {
+			  "ModulesUrl": "https://github.com/givenscj/mcw-azure-security/blob/master/Scripts/Install_IIS.zip?raw=true",
+			  "ConfigurationFunction": "Install_IIS.ps1\\InstallIIS",
+			  "Properties": {
+				"MachineName": "web-1"
+			  }
+			},
+			"protectedSettings": null
+		  }
+	  }
+	]
+}

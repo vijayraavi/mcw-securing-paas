@@ -1,0 +1,275 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="InsuranceModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Claim">
+    <Key>
+      <PropertyRef Name="ClaimId" />
+    </Key>
+    <Property Name="ClaimId" Type="Guid" Nullable="false" />
+    <Property Name="AccidentId" Type="Guid" />
+    <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+    <Property Name="CreateDate" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="Order">
+    <Key>
+      <PropertyRef Name="OrderId" />
+    </Key>
+    <Property Name="OrderId" Type="Guid" Nullable="false" />
+    <Property Name="PolicyId" Type="Guid" />
+    <Property Name="UserId" Type="Guid" />
+    <Property Name="CreditCardNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Amount" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+    <Property Name="CreateDate" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="User" Relationship="InsuranceModel.FK_Order_User" FromRole="Order" ToRole="User" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="Guid" Nullable="false" />
+    <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="State" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Zip" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Dob" Type="DateTime" Precision="3" />
+    <Property Name="SSN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Gender" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+    <Property Name="CreateDate" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Accidents" Relationship="InsuranceModel.FK_Accident_User" FromRole="User" ToRole="Accident" />
+    <NavigationProperty Name="Orders" Relationship="InsuranceModel.FK_Order_User" FromRole="User" ToRole="Order" />
+    <NavigationProperty Name="Participants" Relationship="InsuranceModel.FK_Participant_User" FromRole="User" ToRole="Participant" />
+    <NavigationProperty Name="Policies" Relationship="InsuranceModel.FK_Policy_User" FromRole="User" ToRole="Policy" />
+    <NavigationProperty Name="UserVehicles" Relationship="InsuranceModel.FK_UserVehicle_User" FromRole="User" ToRole="UserVehicle" />
+  </EntityType>
+  <EntityType Name="UserVehicle">
+    <Key>
+      <PropertyRef Name="UserId" />
+      <PropertyRef Name="VehicleId" />
+    </Key>
+    <Property Name="UserId" Type="Guid" Nullable="false" />
+    <Property Name="VehicleId" Type="Guid" Nullable="false" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+    <Property Name="CreateDate" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="User" Relationship="InsuranceModel.FK_UserVehicle_User" FromRole="UserVehicle" ToRole="User" />
+    <NavigationProperty Name="Vehicle" Relationship="InsuranceModel.FK_UserVehicle_Vehicle" FromRole="UserVehicle" ToRole="Vehicle" />
+  </EntityType>
+  <EntityType Name="Vehicle">
+    <Key>
+      <PropertyRef Name="VehicleId" />
+    </Key>
+    <Property Name="VehicleId" Type="Guid" Nullable="false" />
+    <Property Name="VIN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="License" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Make" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Model" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Year" Type="Int32" />
+    <Property Name="Value" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="PurchaseDate" Type="DateTime" Precision="3" />
+    <Property Name="CreateDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+    <Property Name="DeleteDate" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Accidents" Relationship="InsuranceModel.FK_Accident_Vehicle" FromRole="Vehicle" ToRole="Accident" />
+    <NavigationProperty Name="UserVehicles" Relationship="InsuranceModel.FK_UserVehicle_Vehicle" FromRole="Vehicle" ToRole="UserVehicle" />
+  </EntityType>
+  <EntityContainer Name="InsuranceEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Claims" EntityType="Self.Claim" />
+    <EntitySet Name="Orders" EntityType="Self.Order" />
+    <EntitySet Name="Users" EntityType="Self.User" />
+    <EntitySet Name="UserVehicles" EntityType="Self.UserVehicle" />
+    <EntitySet Name="Vehicles" EntityType="Self.Vehicle" />
+    <EntitySet Name="Accidents" EntityType="InsuranceModel.Accident" />
+    <EntitySet Name="Agents" EntityType="InsuranceModel.Agent" />
+    <EntitySet Name="Participants" EntityType="InsuranceModel.Participant" />
+    <EntitySet Name="Policies" EntityType="InsuranceModel.Policy" />
+    <EntitySet Name="vAgentUsers" EntityType="InsuranceModel.vAgentUser" />
+    <AssociationSet Name="FK_Accident_User" Association="InsuranceModel.FK_Accident_User">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Accident" EntitySet="Accidents" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Accident_Vehicle" Association="InsuranceModel.FK_Accident_Vehicle">
+      <End Role="Vehicle" EntitySet="Vehicles" />
+      <End Role="Accident" EntitySet="Accidents" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Order_User" Association="InsuranceModel.FK_Order_User">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Order" EntitySet="Orders" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Participant_User" Association="InsuranceModel.FK_Participant_User">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Participant" EntitySet="Participants" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Policy_User" Association="InsuranceModel.FK_Policy_User">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Policy" EntitySet="Policies" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserVehicle_User" Association="InsuranceModel.FK_UserVehicle_User">
+      <End Role="User" EntitySet="Users" />
+      <End Role="UserVehicle" EntitySet="UserVehicles" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserVehicle_Vehicle" Association="InsuranceModel.FK_UserVehicle_Vehicle">
+      <End Role="Vehicle" EntitySet="Vehicles" />
+      <End Role="UserVehicle" EntitySet="UserVehicles" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Accident">
+    <Key>
+      <PropertyRef Name="ReportNumber" />
+    </Key>
+    <Property Name="ReportNumber" Type="Int32" Nullable="false" />
+    <Property Name="VehicleId" Type="Guid" />
+    <Property Name="UserId" Type="Guid" />
+    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Location" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Date" Type="DateTime" Precision="3" />
+    <Property Name="CreateDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+    <Property Name="DeleteDate" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="User" Relationship="InsuranceModel.FK_Accident_User" FromRole="Accident" ToRole="User" />
+    <NavigationProperty Name="Vehicle" Relationship="InsuranceModel.FK_Accident_Vehicle" FromRole="Accident" ToRole="Vehicle" />
+  </EntityType>
+  <EntityType Name="Agent">
+    <Key>
+      <PropertyRef Name="AgentId" />
+    </Key>
+    <Property Name="AgentId" Type="Guid" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+    <Property Name="CreateDate" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="Participant">
+    <Key>
+      <PropertyRef Name="ReportNumber" />
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="ReportNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UserId" Type="Guid" Nullable="false" />
+    <Property Name="DamageAmount" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+    <Property Name="CreateDate" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="User" Relationship="InsuranceModel.FK_Participant_User" FromRole="Participant" ToRole="User" />
+  </EntityType>
+  <EntityType Name="Policy">
+    <Key>
+      <PropertyRef Name="PolicyId" />
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="PolicyId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UserId" Type="Guid" Nullable="false" />
+    <Property Name="LimitAmount" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+    <Property Name="CreateDate" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="User" Relationship="InsuranceModel.FK_Policy_User" FromRole="Policy" ToRole="User" />
+  </EntityType>
+  <EntityType Name="vAgentUser">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="Guid" Nullable="false" />
+    <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="State" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Zip" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Dob" Type="DateTime" Precision="3" />
+    <Property Name="SSN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Gender" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Data" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+    <Property Name="CreateDate" Type="DateTime" Precision="3" />
+  </EntityType>
+  <Association Name="FK_Accident_User">
+    <End Type="InsuranceModel.User" Role="User" Multiplicity="0..1" />
+    <End Type="InsuranceModel.Accident" Role="Accident" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Accident">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Accident_Vehicle">
+    <End Type="InsuranceModel.Vehicle" Role="Vehicle" Multiplicity="0..1" />
+    <End Type="InsuranceModel.Accident" Role="Accident" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Vehicle">
+        <PropertyRef Name="VehicleId" />
+      </Principal>
+      <Dependent Role="Accident">
+        <PropertyRef Name="VehicleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Order_User">
+    <End Type="InsuranceModel.User" Role="User" Multiplicity="0..1" />
+    <End Type="InsuranceModel.Order" Role="Order" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Order">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Participant_User">
+    <End Type="InsuranceModel.User" Role="User" Multiplicity="1" />
+    <End Type="InsuranceModel.Participant" Role="Participant" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Participant">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Policy_User">
+    <End Type="InsuranceModel.User" Role="User" Multiplicity="1" />
+    <End Type="InsuranceModel.Policy" Role="Policy" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Policy">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserVehicle_User">
+    <End Type="InsuranceModel.User" Role="User" Multiplicity="1" />
+    <End Type="InsuranceModel.UserVehicle" Role="UserVehicle" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="UserVehicle">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserVehicle_Vehicle">
+    <End Type="InsuranceModel.Vehicle" Role="Vehicle" Multiplicity="1" />
+    <End Type="InsuranceModel.UserVehicle" Role="UserVehicle" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Vehicle">
+        <PropertyRef Name="VehicleId" />
+      </Principal>
+      <Dependent Role="UserVehicle">
+        <PropertyRef Name="VehicleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
