@@ -15,7 +15,7 @@
 			"type": "String"
 		},	
 		"paassecurity_ssa_name": {
-			"defaultValue": "paassecurity-ssa-yourinit",
+			"defaultValue": "paassecurityssayourinit",
 			"type": "String"
 		},	
 		"location": {
@@ -40,8 +40,8 @@
     },
     "variables": {
 		"applicationGatewayName": "paassecurity-waf",
-		"publicIPAddressName": "paasecurity-waf-publicip",
-		"virtualNetworkName": "mainVNet",
+		"publicIPAddressName": "paassecurity-waf-publicip",
+		"virtualNetworkName": "paassecurity-vnet-main",
 		"subnetName": "waf",
 		"sampleDbName": "paassecurity-db-sampledb",
 		"subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets/', variables('virtualNetworkName'), variables('subnetName'))]",
@@ -719,16 +719,16 @@
             "location": "[parameters('location')]",
             "scale": null,
             "properties": {
-                "auditingState": "Enabled",
+                "auditingState": "Disabled",
                 "eventTypesToAudit": "PlainSQL_Success,PlainSQL_Failure,ParameterizedSQL_Success,ParameterizedSQL_Failure,StoredProcedure_Success,StoredProcedure_Failure,Login_Success,Login_Failure,TransactionManagement_Success,TransactionManagement_Failure",
-                "storageAccountName": null,
+                "storageAccountName": "[parameters('paassecurity_ssa_name')]",
                 "storageAccountKey": null,
                 "storageAccountSecondaryKey": null,
                 "storageTableEndpoint": null,
-                "storageAccountResourceGroupName": null,
-                "storageAccountSubscriptionId": null,
+                "storageAccountResourceGroupName": "[resourceGroup().name]",
+                "storageAccountSubscriptionId": "[subscription().subscriptionId]",
                 "fullAuditLogsTableName": "SQLDBAuditLogsPaassecuritycjg",
-                "auditLogsTableName": "Paassecuritycjg",
+                "auditLogsTableName": "[toLower(parameters('paassecurity_sql_name'))]",
                 "retentionDays": "0"
             },
             "dependsOn": [
@@ -772,7 +772,7 @@
             "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/SampleDB'.",
             "type": "Microsoft.Sql/servers/databases",
             "kind": "v12.0,user",
-            "name": "[concat(toLower(parameters('paassecurity_sql_name')), '/', [variables('sampleDbName')])]",
+            "name": "[concat(toLower(parameters('paassecurity_sql_name')), '/', variables('sampleDbName'))]",
             "apiVersion": "2014-04-01-preview",
             "location": "[parameters('location')]",
             "scale": null,
@@ -849,7 +849,7 @@
         {
             "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/SampleDB/advisors/CreateIndex'.",
             "type": "Microsoft.Sql/servers/databases/advisors",
-            "name": "[concat(toLower(parameters('paassecurity_sql_name')), '/', [variables('sampleDbName')], '/', 'CreateIndex')]",
+            "name": "[concat(toLower(parameters('paassecurity_sql_name')), '/', variables('sampleDbName'), '/', 'CreateIndex')]",
             "apiVersion": "2014-04-01",
             "scale": null,
             "properties": {
@@ -857,13 +857,13 @@
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Sql/servers', toLower(parameters('paassecurity_sql_name')))]",
-                "[resourceId('Microsoft.Sql/servers/databases', toLower(parameters('paassecurity_sql_name')), [variables('sampleDbName')])]"
+                "[resourceId('Microsoft.Sql/servers/databases', toLower(parameters('paassecurity_sql_name')), variables('sampleDbName'))]"
             ]
         },
         {
             "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/SampleDB/advisors/DropIndex'.",
             "type": "Microsoft.Sql/servers/databases/advisors",
-            "name": "[concat(toLower(parameters('paassecurity_sql_name')), '/', [variables('sampleDbName')], '/', 'DropIndex')]",
+            "name": "[concat(toLower(parameters('paassecurity_sql_name')), '/', variables('sampleDbName'), '/', 'DropIndex')]",
             "apiVersion": "2014-04-01",
             "scale": null,
             "properties": {
@@ -871,13 +871,13 @@
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Sql/servers', toLower(parameters('paassecurity_sql_name')))]",
-                "[resourceId('Microsoft.Sql/servers/databases', toLower(parameters('paassecurity_sql_name')), [variables('sampleDbName')])]"
+                "[resourceId('Microsoft.Sql/servers/databases', toLower(parameters('paassecurity_sql_name')), variables('sampleDbName'))]"
             ]
         },
         {
             "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/SampleDB/advisors/DbParameterization'.",
             "type": "Microsoft.Sql/servers/databases/advisors",
-            "name": "[concat(toLower(parameters('paassecurity_sql_name')), '/', [variables('sampleDbName')], '/', 'DbParameterization')]",
+            "name": "[concat(toLower(parameters('paassecurity_sql_name')), '/', variables('sampleDbName'), '/', 'DbParameterization')]",
             "apiVersion": "2014-04-01",
             "scale": null,
             "properties": {
@@ -885,13 +885,13 @@
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Sql/servers', toLower(parameters('paassecurity_sql_name')))]",
-                "[resourceId('Microsoft.Sql/servers/databases', toLower(parameters('paassecurity_sql_name')), [variables('sampleDbName')])]"
+                "[resourceId('Microsoft.Sql/servers/databases', toLower(parameters('paassecurity_sql_name')), variables('sampleDbName'))]"
             ]
         },
         {
             "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/SampleDB/advisors/ForceLastGoodPlan'.",
             "type": "Microsoft.Sql/servers/databases/advisors",
-            "name": "[concat(toLower(parameters('paassecurity_sql_name')), '/', [variables('sampleDbName')], '/', 'ForceLastGoodPlan')]",
+            "name": "[concat(toLower(parameters('paassecurity_sql_name')), '/', variables('sampleDbName'), '/', 'ForceLastGoodPlan')]",
             "apiVersion": "2014-04-01",
             "scale": null,
             "properties": {
@@ -899,13 +899,13 @@
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Sql/servers', toLower(parameters('paassecurity_sql_name')))]",
-                "[resourceId('Microsoft.Sql/servers/databases', toLower(parameters('paassecurity_sql_name')), [variables('sampleDbName')])]"
+                "[resourceId('Microsoft.Sql/servers/databases', toLower(parameters('paassecurity_sql_name')), variables('sampleDbName'))]"
             ]
         },
         {
             "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/SampleDB/auditingPolicies/Default'.",
             "type": "Microsoft.Sql/servers/databases/auditingPolicies",
-            "name": "[concat(toLower(parameters('paassecurity_sql_name')), '/', [variables('sampleDbName')], '/', 'Default')]",
+            "name": "[concat(toLower(parameters('paassecurity_sql_name')), '/', variables('sampleDbName'), '/', 'Default')]",
             "apiVersion": "2014-04-01",
             "location": "[parameters('location')]",
             "scale": null,
@@ -925,13 +925,13 @@
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Sql/servers', toLower(parameters('paassecurity_sql_name')))]",
-                "[resourceId('Microsoft.Sql/servers/databases', toLower(parameters('paassecurity_sql_name')), [variables('sampleDbName')])]"
+                "[resourceId('Microsoft.Sql/servers/databases', toLower(parameters('paassecurity_sql_name')), variables('sampleDbName'))]"
             ]
         },        
         {
             "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/SampleDB/transparentDataEncryption/current'.",
             "type": "Microsoft.Sql/servers/databases/transparentDataEncryption",
-            "name": "[concat(toLower(parameters('paassecurity_sql_name')), '/', [variables('sampleDbName')], '/', 'current')]",
+            "name": "[concat(toLower(parameters('paassecurity_sql_name')), '/', variables('sampleDbName'), '/', 'current')]",
             "apiVersion": "2014-04-01",
             "location": "[parameters('location')]",
             "scale": null,
@@ -940,7 +940,7 @@
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Sql/servers', toLower(parameters('paassecurity_sql_name')))]",
-                "[resourceId('Microsoft.Sql/servers/databases', toLower(parameters('paassecurity_sql_name')), [variables('sampleDbName')])]"
+                "[resourceId('Microsoft.Sql/servers/databases', toLower(parameters('paassecurity_sql_name')), variables('sampleDbName'))]"
             ]
         },        
 		 {
@@ -1072,7 +1072,7 @@
             ],
             "properties": {
                 "osProfile": {
-                    "computerName": "paassecurity-vm-jump",
+                    "computerName": "vm-jump",
                     "adminUsername": "[parameters('adminUsername')]",
                     "adminPassword": "[parameters('adminPassword')]",
                     "windowsConfiguration": {
@@ -1080,7 +1080,7 @@
                     }
                 },
                 "hardwareProfile": {
-                    "vmSize": "[parameters('virtualMachineSize')]"
+                    "vmSize": "Standard_DS2_v2"
                 },
                 "storageProfile": {
                     "imageReference": {
@@ -1228,6 +1228,6 @@
                 "name": "[toLower(parameters('paassecurity_cosmos_name'))]"
             },
             "dependsOn": []
-        },
+        }
     ]	
 }
