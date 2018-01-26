@@ -1,0 +1,38 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "sqlServerName": {
+      "type": "string",
+      "defaultValue": "paassecurity-abc",
+      "metadata": {
+        "description": "Name of the Azure SQL Server"
+      }
+    },
+    "adminUsername": {
+      "type": "string"      
+    },
+	"adminPassword": {
+      "type": "string"
+    }
+  },
+  "variables": {
+  },
+  "resources": [
+    {
+		"comments": "",
+		"type": "Microsoft.Sql/servers",
+		"kind": "v12.0",
+		"name": "[parameters('sqlServerName')]",
+		"apiVersion": "2015-05-01-preview",
+		"location": "[resourceGroup().location]",
+		"scale": null,
+		"properties": {
+			"administratorLogin": "[parameters('adminUsername')]",
+			"administratorLoginPassword": "[parameters('adminPassword')]",
+			"version": "12.0"
+		},
+		"dependsOn": []
+    }
+  ]
+}

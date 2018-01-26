@@ -1,0 +1,1541 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+		"servers_paassecurity_cjg_name": {
+			"defaultValue": "paassecurity-sql-YOURINIT",
+			"type": "String"
+		},
+		"hostingEnvironments_paassecurity_cjg_name": {
+			"defaultValue": "paassecurity-ase-YOURINIT",
+			"type": "String"
+		}	
+    },
+    "variables": {
+		"applicationGatewayName": "paassecurity-waf",
+		"publicIPAddressName": "paasecurity-waf-publicip",
+		"virtualNetworkName": "mainVNet",
+		"subnetName": "waf",
+		"subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets/', variables('virtualNetworkName'), variables('subnetName'))]",
+		"publicIPRef": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]",
+		"applicationGatewayID": "[resourceId('Microsoft.Network/applicationGateways', variables('applicationGatewayName'))]"
+	},
+    "resources": [        
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/networkSecurityGroups/paassecurity-cjg-NSG'.",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "paassecurity-ase-nsg",
+            "apiVersion": "2017-06-01",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "displayName": "NSG - Subnet"
+            },
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "8733c588-378d-4ba0-b164-515c398af85e",
+                "securityRules": [
+                    {
+                        "name": "Inbound-management",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Used to manage ASE from public VIP",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "454-455",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "ASE-internal-inbound",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "ASE-internal-inbound",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "192.168.250.0/24",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 110,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "Inbound-HTTP",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow HTTP",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "80",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 120,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "Inbount-HTTPS",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow HTTPS",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "443",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 130,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "Inbound-FTP",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow FTP over port 21",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "21",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 140,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "Inbound-FTPS",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow FTPS",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "990",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 150,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "Inbound-FTP-Data",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "RDP",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "10001-10020",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 160,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "Inbound-Remote-Debugging",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Visual Studio remote debugging",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "4016-4022",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 170,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "Outbound-443",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Azure Storage blob",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "443",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "Outbound-SMB",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Azure Storage queue",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "445",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 110,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "Outbound-DB",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Database",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "1433",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 120,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "Outbound-DB2",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Database 2",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "11000-11999",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 130,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "Outbound-DB3",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Database 3",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "14000-14999",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 140,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "Outbound-DNS",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "DNS",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "53",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 150,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "ASE-internal-outbound",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Azure Storage queue",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "192.168.250.0/24",
+                            "access": "Allow",
+                            "priority": 160,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "Outbound-80",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Outbound 80",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "80",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 170,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "ASE-to-VNET",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "ASE to VNET",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "192.168.250.0/23",
+                            "access": "Allow",
+                            "priority": 180,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ],
+                "defaultSecurityRules": [
+                    {
+                        "name": "AllowVnetInBound",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow inbound traffic from all VMs in VNET",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 65000,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowAzureLoadBalancerInBound",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow inbound traffic from azure load balancer",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "AzureLoadBalancer",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 65001,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "DenyAllInBound",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Deny all inbound traffic",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 65500,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowVnetOutBound",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow outbound traffic from all VMs to all VMs in VNET",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 65000,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowInternetOutBound",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow outbound traffic from all VMs to Internet",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "Internet",
+                            "access": "Allow",
+                            "priority": 65001,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "DenyAllOutBound",
+                        "etag": "W/\"384ab5e0-1ba3-4bb4-a6f7-7d71c14c774b\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Deny all outbound traffic",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 65500,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ]
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/publicIPAddresses/paassecurity-waf-cjg'.",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "paassecurity-waf-cjg-publicip",
+            "apiVersion": "2017-06-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "f3162f2b-0d11-4d66-bbd3-613afc7e2672",
+                "ipAddress": "40.69.171.71",
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Dynamic",
+                "idleTimeoutInMinutes": 4,
+                "dnsSettings": {
+                    "fqdn": "c5850c35-08cf-4a80-a11d-b6bfbd3738b0.cloudapp.net",
+                    "domainNameLabel": "[parameters('publicIPAddresses_paassecurity_waf_cjg_domainNameLabel')]"
+                }
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/routeTables/paassecurity-cjg-Route-Table'.",
+            "type": "Microsoft.Network/routeTables",
+            "name": "paassecurity-route-table",
+            "apiVersion": "2017-06-01",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "displayName": "UDR - Subnet"
+            },
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "routes": [
+                    {
+                        "name": "paassecurity-cjg-route",
+                        "etag": "W/\"0aa45124-7662-49c1-996b-9742cd9b6f03\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "addressPrefix": "0.0.0.0/0",
+                            "nextHopType": "Internet"
+                        }
+                    }
+                ]
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/virtualNetworks/mainVNet'.",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[variables('virtualNetworkName')]",
+            "apiVersion": "2017-06-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "bbd83456-eb3f-4615-b308-cdf7b0f1f615",
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.0.0.0/16"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "default",
+                        "etag": "W/\"ce1f9405-910f-4a34-a874-844e3ec02f53\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "addressPrefix": "10.0.0.0/24"
+                        }
+                    },
+                    {
+                        "name": "web",
+                        "etag": "W/\"ce1f9405-910f-4a34-a874-844e3ec02f53\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "addressPrefix": "10.0.1.0/24"
+                        }
+                    },
+                    {
+                        "name": "waf",
+                        "etag": "W/\"ce1f9405-910f-4a34-a874-844e3ec02f53\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "addressPrefix": "10.0.2.0/24"
+                        }
+                    },
+                    {
+                        "name": "ase",
+                        "etag": "W/\"ce1f9405-910f-4a34-a874-844e3ec02f53\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "addressPrefix": "10.0.4.0/24",
+                            "resourceNavigationLinks": [
+                                {
+                                    "name": "MicrosoftWeb_HostingEnvironments_paassecurity-cjg",
+                                    "properties": {
+                                        "linkedResourceType": "Microsoft.Web/hostingEnvironments",
+                                        "link": "[resourceId('Microsoft.Web/hostingEnvironments', parameters('hostingEnvironments_paassecurity_cjg_name'))]"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "virtualNetworkPeerings": []
+            },
+            "dependsOn": [            
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg'.",
+            "type": "Microsoft.Sql/servers",
+            "kind": "v12.0",
+            "name": "[parameters('servers_paassecurity_cjg_name')]",
+            "apiVersion": "2015-05-01-preview",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "administratorLogin": "[parameters('adminUsername')]",
+				"administratorLoginPassword": "[parameters('adminePassword')]",
+                "version": "12.0"
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Web/hostingEnvironments/paassecurity-cjg'.",
+            "type": "Microsoft.Web/hostingEnvironments",
+            "kind": "ASEV2",
+            "name": "[parameters('hostingEnvironments_paassecurity_cjg_name')]",
+            "apiVersion": "2016-09-01",
+            "location": "[resourceGroup().location]",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "name": "[parameters('hostingEnvironments_paassecurity_cjg_name')]",
+                "location": "[resourceGroup().location]",
+                "vnetName": "mainVNet",
+                "vnetResourceGroupName": "PaasSecurity",
+                "vnetSubnetName": "ase",
+                "virtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+                    "subnet": "ase"
+                },
+                "internalLoadBalancingMode": "Web, Publishing",
+                "multiSize": "Standard_D1_V2",
+                "multiRoleCount": 2,
+                "workerPools": null,
+                "ipsslAddressCount": 0,
+                "dnsSuffix": "passsecurity.me",
+                "networkAccessControlList": [],
+                "frontEndScaleFactor": 15,
+                "apiManagementAccountId": null,
+                "suspended": false,
+                "dynamicCacheEnabled": null,
+                "clusterSettings": null
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/networkSecurityGroups/paassecurity-cjg-NSG/securityRules/Inbound-management'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat('paassecurity-ase-nsg', '/', 'Inbound_management')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "description": "Used to manage ASE from public VIP",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "454-455",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 100,
+                "direction": "Inbound",
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', 'paassecurity-ase-nsg')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/networkSecurityGroups/paassecurity-cjg-NSG/securityRules/ASE-internal-inbound'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat('paassecurity-ase-nsg', '/', 'ASE_internal_inbound')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "description": "ASE_internal_inbound",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "*",
+                "sourceAddressPrefix": "192.168.250.0/24",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 110,
+                "direction": "Inbound",
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', 'paassecurity-ase-nsg')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/networkSecurityGroups/paassecurity-cjg-NSG/securityRules/Inbound-HTTP'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat('paassecurity-ase-nsg', '/', 'Inbound_HTTP')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "description": "Allow HTTP",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "80",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 120,
+                "direction": "Inbound",
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', 'paassecurity-ase-nsg')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/networkSecurityGroups/paassecurity-cjg-NSG/securityRules/Inbount-HTTPS'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat('paassecurity-ase-nsg', '/', 'Inbount_HTTPS')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "description": "Allow HTTPS",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "443",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 130,
+                "direction": "Inbound",
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', 'paassecurity-ase-nsg')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/networkSecurityGroups/paassecurity-cjg-NSG/securityRules/Inbound-FTP'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat('paassecurity-ase-nsg', '/', 'Inbound_FTP')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "description": "Allow FTP over port 21",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "21",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 140,
+                "direction": "Inbound",
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', 'paassecurity-ase-nsg')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/networkSecurityGroups/paassecurity-cjg-NSG/securityRules/Inbound-FTPS'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat('paassecurity-ase-nsg', '/', 'Inbound_FTPS')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "description": "Allow FTPS",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "990",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 150,
+                "direction": "Inbound",
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', 'paassecurity-ase-nsg')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/networkSecurityGroups/paassecurity-cjg-NSG/securityRules/Inbound-FTP-Data'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat('paassecurity-ase-nsg', '/', 'Inbound_FTP_Data')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "description": "RDP",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "10001-10020",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 160,
+                "direction": "Inbound",
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', 'paassecurity-ase-nsg')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/networkSecurityGroups/paassecurity-cjg-NSG/securityRules/Inbound-Remote-Debugging'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat('paassecurity-ase-nsg', '/', 'Inbound_Remote_Debugging')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "description": "Visual Studio remote debugging",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "4016-4022",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 170,
+                "direction": "Inbound",
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', 'paassecurity-ase-nsg')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/networkSecurityGroups/paassecurity-cjg-NSG/securityRules/Outbound-443'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat('paassecurity-ase-nsg', '/', 'Outbound_443')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "description": "Azure Storage blob",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "443",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 100,
+                "direction": "Outbound",
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', 'paassecurity-ase-nsg')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/networkSecurityGroups/paassecurity-cjg-NSG/securityRules/Outbound-SMB'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat('paassecurity-ase-nsg', '/', 'Outbound_SMB')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "description": "Azure Storage queue",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "445",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 110,
+                "direction": "Outbound",
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', 'paassecurity-ase-nsg')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/networkSecurityGroups/paassecurity-cjg-NSG/securityRules/Outbound-DB'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat('paassecurity-ase-nsg', '/', 'Outbound_DB')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "description": "Database",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "1433",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 120,
+                "direction": "Outbound",
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', 'paassecurity-ase-nsg')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/networkSecurityGroups/paassecurity-cjg-NSG/securityRules/Outbound-DB2'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat('paassecurity-ase-nsg', '/', 'Outbound_DB2')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "description": "Database 2",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "11000-11999",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 130,
+                "direction": "Outbound",
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', 'paassecurity-ase-nsg')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/networkSecurityGroups/paassecurity-cjg-NSG/securityRules/Outbound-DB3'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat('paassecurity-ase-nsg', '/', 'Outbound_DB3')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "description": "Database 3",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "14000-14999",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 140,
+                "direction": "Outbound",
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', 'paassecurity-ase-nsg')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/networkSecurityGroups/paassecurity-cjg-NSG/securityRules/Outbound-DNS'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat('paassecurity-ase-nsg', '/', 'Outbound_DNS')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "description": "DNS",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "53",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 150,
+                "direction": "Outbound",
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', 'paassecurity-ase-nsg')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/networkSecurityGroups/paassecurity-cjg-NSG/securityRules/ASE-internal-outbound'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat('paassecurity-ase-nsg', '/', 'ASE_internal_outbound')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "description": "Azure Storage queue",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "*",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "192.168.250.0/24",
+                "access": "Allow",
+                "priority": 160,
+                "direction": "Outbound",
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', 'paassecurity-ase-nsg')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/networkSecurityGroups/paassecurity-cjg-NSG/securityRules/Outbound-80'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat('paassecurity-ase-nsg', '/', 'Outbound_80')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "description": "Outbound 80",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "80",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 170,
+                "direction": "Outbound",
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', 'paassecurity-ase-nsg')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/networkSecurityGroups/paassecurity-cjg-NSG/securityRules/ASE-to-VNET'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat('paassecurity-ase-nsg', '/', 'ASE_to_VNET')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "description": "ASE to VNET",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "*",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "192.168.250.0/23",
+                "access": "Allow",
+                "priority": 180,
+                "direction": "Outbound",
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', 'paassecurity-ase-nsg')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/routeTables/paassecurity-cjg-Route-Table/routes/paassecurity-cjg-route'.",
+            "type": "Microsoft.Network/routeTables/routes",
+            "name": "[concat('paassecurity-route-table', '/', 'paassecurity-route')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "addressPrefix": "0.0.0.0/0",
+                "nextHopType": "Internet"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/routeTables', 'paassecurity-route-table')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/virtualNetworks/mainVNet/subnets/default'.",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "name": "[concat(variables('virtualNetworkName'), '/', 'default')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "addressPrefix": "10.0.0.0/24"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/virtualNetworks/mainVNet/subnets/web'.",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "name": "[concat(variables('virtualNetworkName'), '/', 'web')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "addressPrefix": "10.0.1.0/24"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/virtualNetworks/mainVNet/subnets/waf'.",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "name": "[concat(variables('virtualNetworkName'), '/', 'waf')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "addressPrefix": "10.0.2.0/24"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Network/virtualNetworks/mainVNet/subnets/ase'.",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "name": "[concat(variables('virtualNetworkName'), '/', 'ase')]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "addressPrefix": "10.0.4.0/24",
+                "resourceNavigationLinks": [
+                    {
+                        "name": "MicrosoftWeb_HostingEnvironments_paassecurity-cjg",
+                        "properties": {
+                            "linkedResourceType": "Microsoft.Web/hostingEnvironments",
+                            "link": "[resourceId('Microsoft.Web/hostingEnvironments', parameters('hostingEnvironments_paassecurity_cjg_name'))]"
+                        }
+                    }
+                ]
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+                "[resourceId('Microsoft.Web/hostingEnvironments', parameters('hostingEnvironments_paassecurity_cjg_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/auditingPolicies/Default'.",
+            "type": "Microsoft.Sql/servers/auditingPolicies",
+            "name": "[concat(parameters('servers_paassecurity_cjg_name'), '/', 'Default')]",
+            "apiVersion": "2014-04-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "auditingState": "New",
+                "eventTypesToAudit": "PlainSQL_Success,PlainSQL_Failure,ParameterizedSQL_Success,ParameterizedSQL_Failure,StoredProcedure_Success,StoredProcedure_Failure,Login_Success,Login_Failure,TransactionManagement_Success,TransactionManagement_Failure",
+                "storageAccountName": null,
+                "storageAccountKey": null,
+                "storageAccountSecondaryKey": null,
+                "storageTableEndpoint": null,
+                "storageAccountResourceGroupName": null,
+                "storageAccountSubscriptionId": null,
+                "fullAuditLogsTableName": "SQLDBAuditLogsPaassecuritycjg",
+                "auditLogsTableName": "Paassecuritycjg",
+                "retentionDays": "0"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_paassecurity_cjg_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/backupLongTermRetentionVaults/RegisteredVault'.",
+            "type": "Microsoft.Sql/servers/backupLongTermRetentionVaults",
+            "name": "[concat(parameters('servers_paassecurity_cjg_name'), '/', 'RegisteredVault')]",
+            "apiVersion": "2014-04-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "recoveryServicesVaultResourceId": null
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_paassecurity_cjg_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/master'.",
+            "type": "Microsoft.Sql/servers/databases",
+            "kind": "v12.0,system",
+            "name": "[concat(parameters('servers_paassecurity_cjg_name'), '/', 'master')]",
+            "apiVersion": "2014-04-01-preview",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "databaseId": "d2b0ae14-7db8-4a40-a346-0816847cc088",
+                "edition": "Basic",
+                "status": "Online",
+                "serviceLevelObjective": "Basic",
+                "collation": "SQL_Latin1_General_CP1_CI_AS",
+                "maxSizeBytes": "2147483648",
+                "creationDate": "2018-01-26T03:55:55.183Z",
+                "currentServiceObjectiveId": "dd6d99bb-f193-4ec1-86f2-43d3bccbc49c",
+                "requestedServiceObjectiveId": "dd6d99bb-f193-4ec1-86f2-43d3bccbc49c",
+                "requestedServiceObjectiveName": "Basic",
+                "sampleName": null,
+                "defaultSecondaryLocation": "East US 2",
+                "earliestRestoreDate": null,
+                "elasticPoolName": null,
+                "containmentState": 2,
+                "readScale": "Disabled",
+                "failoverGroupId": null,
+                "zoneRedundant": false,
+                "isUpgradeRequested": false
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_paassecurity_cjg_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/SampleDB'.",
+            "type": "Microsoft.Sql/servers/databases",
+            "kind": "v12.0,user",
+            "name": "[concat(parameters('servers_paassecurity_cjg_name'), '/', 'SampleDB')]",
+            "apiVersion": "2014-04-01-preview",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "databaseId": "2371c996-0020-4185-80da-f21fed9b914b",
+                "edition": "Basic",
+                "status": "Online",
+                "serviceLevelObjective": "Basic",
+                "collation": "SQL_Latin1_General_CP1_CI_AS",
+                "maxSizeBytes": "2147483648",
+                "creationDate": "2018-01-26T04:13:22.657Z",
+                "currentServiceObjectiveId": "dd6d99bb-f193-4ec1-86f2-43d3bccbc49c",
+                "requestedServiceObjectiveId": "dd6d99bb-f193-4ec1-86f2-43d3bccbc49c",
+                "requestedServiceObjectiveName": "Basic",
+                "sampleName": null,
+                "defaultSecondaryLocation": "East US 2",
+                "earliestRestoreDate": "2018-01-26T04:43:57.087Z",
+                "elasticPoolName": null,
+                "containmentState": 2,
+                "readScale": "Disabled",
+                "failoverGroupId": null,
+                "zoneRedundant": false,
+                "isUpgradeRequested": false
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_paassecurity_cjg_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/firewallRules/AllowAllWindowsAzureIps'.",
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "kind": "v12.0",
+            "name": "[concat(parameters('servers_paassecurity_cjg_name'), '/', 'AllowAllWindowsAzureIps')]",
+            "apiVersion": "2014-04-01-preview",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "startIpAddress": "0.0.0.0",
+                "endIpAddress": "0.0.0.0"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_paassecurity_cjg_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/encryptionProtector/current'.",
+            "type": "Microsoft.Sql/servers/encryptionProtector",
+            "kind": "servicemanaged",
+            "name": "[concat(parameters('servers_paassecurity_cjg_name'), '/', 'current')]",
+            "apiVersion": "2015-05-01-preview",
+            "scale": null,
+            "properties": {
+                "serverKeyName": "ServiceManaged",
+                "serverKeyType": "ServiceManaged"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_paassecurity_cjg_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/keys/ServiceManaged'.",
+            "type": "Microsoft.Sql/servers/keys",
+            "kind": "servicemanaged",
+            "name": "[concat(parameters('servers_paassecurity_cjg_name'), '/', 'ServiceManaged')]",
+            "apiVersion": "2015-05-01-preview",
+            "scale": null,
+            "properties": {
+                "serverKeyType": "['ServiceManaged']"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_paassecurity_cjg_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/SampleDB/advisors/CreateIndex'.",
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "name": "[concat(parameters('servers_paassecurity_cjg_name'), '/', 'SampleDB', '/', 'CreateIndex')]",
+            "apiVersion": "2014-04-01",
+            "scale": null,
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_paassecurity_cjg_name'))]",
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_paassecurity_cjg_name'), 'SampleDB')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/SampleDB/advisors/DropIndex'.",
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "name": "[concat(parameters('servers_paassecurity_cjg_name'), '/', 'SampleDB', '/', 'DropIndex')]",
+            "apiVersion": "2014-04-01",
+            "scale": null,
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_paassecurity_cjg_name'))]",
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_paassecurity_cjg_name'), 'SampleDB')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/SampleDB/advisors/DbParameterization'.",
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "name": "[concat(parameters('servers_paassecurity_cjg_name'), '/', 'SampleDB', '/', 'DbParameterization')]",
+            "apiVersion": "2014-04-01",
+            "scale": null,
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_paassecurity_cjg_name'))]",
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_paassecurity_cjg_name'), 'SampleDB')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/SampleDB/advisors/ForceLastGoodPlan'.",
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "name": "[concat(parameters('servers_paassecurity_cjg_name'), '/', 'SampleDB', '/', 'ForceLastGoodPlan')]",
+            "apiVersion": "2014-04-01",
+            "scale": null,
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_paassecurity_cjg_name'))]",
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_paassecurity_cjg_name'), 'SampleDB')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/SampleDB/auditingPolicies/Default'.",
+            "type": "Microsoft.Sql/servers/databases/auditingPolicies",
+            "name": "[concat(parameters('servers_paassecurity_cjg_name'), '/', 'SampleDB', '/', 'Default')]",
+            "apiVersion": "2014-04-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "auditingState": "New",
+                "eventTypesToAudit": "PlainSQL_Success,PlainSQL_Failure,ParameterizedSQL_Success,ParameterizedSQL_Failure,StoredProcedure_Success,StoredProcedure_Failure,Login_Success,Login_Failure,TransactionManagement_Success,TransactionManagement_Failure",
+                "storageAccountName": null,
+                "storageAccountKey": null,
+                "storageAccountSecondaryKey": null,
+                "storageTableEndpoint": null,
+                "storageAccountResourceGroupName": null,
+                "storageAccountSubscriptionId": null,
+                "useServerDefault": "Enabled",
+                "fullAuditLogsTableName": "SQLDBAuditLogsPaassecuritycjgSampledb",
+                "auditLogsTableName": "PaassecuritycjgSampledb",
+                "retentionDays": "0"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_paassecurity_cjg_name'))]",
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_paassecurity_cjg_name'), 'SampleDB')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/SampleDB/backupLongTermRetentionPolicies/Default'.",
+            "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
+            "name": "[concat(parameters('servers_paassecurity_cjg_name'), '/', 'SampleDB', '/', 'Default')]",
+            "apiVersion": "2014-04-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "state": "Disabled",
+                "recoveryServicesBackupPolicyResourceId": null
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_paassecurity_cjg_name'))]",
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_paassecurity_cjg_name'), 'SampleDB')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/SampleDB/geoBackupPolicies/Default'.",
+            "type": "Microsoft.Sql/servers/databases/geoBackupPolicies",
+            "name": "[concat(parameters('servers_paassecurity_cjg_name'), '/', 'SampleDB', '/', 'Default')]",
+            "apiVersion": "2014-04-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "state": "Enabled"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_paassecurity_cjg_name'))]",
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_paassecurity_cjg_name'), 'SampleDB')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/SampleDB/transparentDataEncryption/current'.",
+            "type": "Microsoft.Sql/servers/databases/transparentDataEncryption",
+            "name": "[concat(parameters('servers_paassecurity_cjg_name'), '/', 'SampleDB', '/', 'current')]",
+            "apiVersion": "2014-04-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "status": "Enabled"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_paassecurity_cjg_name'))]",
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_paassecurity_cjg_name'), 'SampleDB')]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Web/hostingEnvironments/paassecurity-cjg/multiRolePools/default'.",
+            "type": "Microsoft.Web/hostingEnvironments/multiRolePools",
+            "sku": {
+                "name": "Q1",
+                "tier": "Quantum",
+                "size": "Q1",
+                "family": "Q",
+                "capacity": 2
+            },
+            "name": "[concat(parameters('hostingEnvironments_paassecurity_cjg_name'), '/', 'default')]",
+            "apiVersion": "2016-09-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "workerSize": "Standard_D1_V2",
+                "workerCount": 2,
+                "instanceNames": [
+                    "10.0.4.9",
+                    "10.0.4.8"
+                ],
+                "mdmId": "waws-prod-dm1-b6b3eaab_MultiRole"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/hostingEnvironments', parameters('hostingEnvironments_paassecurity_cjg_name'))]"
+            ]
+        },
+		 {
+
+      "apiVersion": "2017-03-01",
+
+      "type": "Microsoft.Network/publicIPAddresses",
+
+      "name": "[variables('publicIPAddressName')]",
+
+      "location": "[resourceGroup().location]",
+
+      "properties": {
+
+        "publicIPAllocationMethod": "Dynamic"
+
+      }
+
+    },    
+
+    {
+      "apiVersion": "2017-06-01",
+      "name": "[variables('applicationGatewayName')]",
+      "type": "Microsoft.Network/applicationGateways",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[variables('virtualNetworkName')]",
+        "[variables('publicIPAddressName')]"
+      ],
+      "properties": {
+        "sku": {
+          "name": "WAF_Medium",
+          "tier": "WAF",
+          "capacity": "2"
+        },
+        "gatewayIPConfigurations": [
+          {
+            "name": "appGatewayIpConfig",
+            "properties": {
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              }
+            }
+          }
+        ],
+        "frontendIPConfigurations": [
+          {
+            "name": "appGatewayFrontendIP",
+            "properties": {
+              "PublicIPAddress": {
+                "id": "[variables('publicIPRef')]"
+              }
+            }
+          }
+        ],
+        "frontendPorts": [
+          {
+            "name": "appGatewayFrontendPort",
+            "properties": {
+              "Port": 80
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "appGatewayBackendPool",
+            "properties": {
+              "BackendAddresses": [
+                {
+                  "IpAddress": "10.0.1.10"
+                },
+                {
+                  "IpAddress": "10.0.1.11"
+                }
+              ]
+            }
+          }
+        ],
+        "backendHttpSettingsCollection": [
+          {
+            "name": "appGatewayBackendHttpSettings",
+            "properties": {
+              "Port": 80,
+              "Protocol": "Http",
+              "CookieBasedAffinity": "Disabled"
+            }
+          }
+        ],
+        "httpListeners": [
+          {
+            "name": "appGatewayHttpListener",
+            "properties": {
+              "FrontendIPConfiguration": {
+                "Id": "[concat(variables('applicationGatewayID'), '/frontendIPConfigurations/appGatewayFrontendIP')]"
+              },
+              "FrontendPort": {
+                "Id": "[concat(variables('applicationGatewayID'), '/frontendPorts/appGatewayFrontendPort')]"
+              },
+              "Protocol": "Http",
+              "SslCertificate": null
+            }
+          }
+        ],
+        "requestRoutingRules": [
+          {
+            "Name": "rule1",
+            "properties": {
+              "RuleType": "Basic",
+              "httpListener": {
+                "id": "[concat(variables('applicationGatewayID'), '/httpListeners/appGatewayHttpListener')]"
+              },
+              "backendAddressPool": {
+                "id": "[concat(variables('applicationGatewayID'), '/backendAddressPools/appGatewayBackendPool')]"
+              },
+              "backendHttpSettings": {
+                "id": "[concat(variables('applicationGatewayID'), '/backendHttpSettingsCollection/appGatewayBackendHttpSettings')]"
+              }
+            }
+          }
+        ],
+        "webApplicationFirewallConfiguration": {
+          "enabled": true,
+          "firewallMode": "Detection",
+          "ruleSetType": "OWASP",
+          "ruleSetVersion": "3.0",
+          "disabledRuleGroups": []
+        }
+		}
+		}
+    ]
+	
+}

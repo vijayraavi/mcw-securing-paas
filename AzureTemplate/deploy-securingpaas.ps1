@@ -18,4 +18,7 @@ $resourceGroupName = "YOUR_RESOURCE_GROUP";
 #New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile "$path\keyvaulttest.json" -TemplateParameterFile "$path\azure-kv-parameters.json"
 
 #for production...
-New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile "$path\azure-kv-deploy.json" -TemplateParameterFile "$path\azure-kv-parameters.json"
+New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile "$path\azure-kv-sql-deploy.json" -TemplateParameterFile "$path\azure-kv-parameters.json"
+
+#Virtual Machine deployment
+#New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile "$path\azure-kv-vm-deploy.json" -TemplateParameterFile "$path\azure-kv-parameters.json"
