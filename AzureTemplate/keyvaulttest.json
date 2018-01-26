@@ -1,0 +1,70 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmName": {
+      "type": "string",
+      "defaultValue": "BlindDeployVM",
+      "metadata": {
+        "description": "Name of the VM"
+      }
+    },
+    "vmSize": {
+      "type": "string",
+      "defaultValue": "Standard_DS2_v2",
+      "metadata": {
+        "description": "Size of the VM"
+      }
+    },
+	"vaultName": {
+      "type": "string",
+      "defaultValue": "kvocpsshstoreab75",
+      "metadata": {
+        "description": "The name of your Key Vault"
+      }
+    },
+	"adminUsername": {
+      "type": "string"      
+    },
+	"adminPassword": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "subnet1Ref": "[resourceId('Microsoft.Network/virtualNetworks/subnets/', variables('virtualNetworkName'), variables('subnet1Name'))]",
+    "nicName": "certNIC",
+    "subnet1Prefix": "10.0.0.0/24",
+    "subnet1Name": "Subnet-1",
+    "virtualNetworkName": "certVNET",
+    "addressPrefix": "10.0.0.0/16",
+    "publicIPName": "certPublicIP",
+    "adminPassword": {
+        "reference": {
+        "keyVault": {
+            "id": "/subscriptions/ab756893-cbb5-4384-bf0a-f311e51765c5/resourceGroups/rhel-ocpkv-rg/providers/Microsoft.KeyVault/vaults/kvocpsshstoreab75"
+        },
+        "secretName": "VMPassword"
+        }
+    },
+    "adminUsername": {
+        "reference": {
+        "keyVault": {
+            "id": "/subscriptions/ab756893-cbb5-4384-bf0a-f311e51765c5/resourceGroups/rhel-ocpkv-rg/providers/Microsoft.KeyVault/vaults/kvocpsshstoreab75"
+        },
+        "secretName": "VMUsername"
+        }
+    }
+  },
+  "resources": [    	
+  ],
+  "outputs": {
+    "adminUsernameOut": {
+      "type": "string",
+      "value": "[parameters('adminUsername')]"
+    },
+	"adminPasswordOut": {
+      "type": "string",
+      "value": "[parameters('adminPassword')]"
+    }
+  }  
+}

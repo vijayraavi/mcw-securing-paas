@@ -1,0 +1,308 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="FourthCoffeeModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="CustomerId" />
+    </Key>
+    <Property Name="CustomerId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="UserId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="ModifyDate" Type="datetime" Nullable="false" />
+    <Property Name="CreateDate" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="CustomerAccount">
+    <Key>
+      <PropertyRef Name="CustomerAccountId" />
+    </Key>
+    <Property Name="CustomerAccountId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="AccountType" Type="int" />
+    <Property Name="CustomerId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Balance" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="CreditCardNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Issuer" Type="nvarchar" MaxLength="50" />
+    <Property Name="IncrementAmount" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="ExpirationDate" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Pin" Type="nvarchar" MaxLength="50" />
+    <Property Name="ModifyDate" Type="datetime" Nullable="false" />
+    <Property Name="CreateDate" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Location">
+    <Key>
+      <PropertyRef Name="LocationId" />
+    </Key>
+    <Property Name="LocationId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="LongName" Type="nvarchar" MaxLength="50" />
+    <Property Name="ShortName" Type="nvarchar" MaxLength="50" />
+    <Property Name="Address1" Type="nvarchar" MaxLength="50" />
+    <Property Name="Address2" Type="nvarchar" MaxLength="50" />
+    <Property Name="City" Type="nvarchar" MaxLength="50" />
+    <Property Name="State" Type="nvarchar" MaxLength="50" />
+    <Property Name="ZipCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="ModifyDate" Type="datetime" Nullable="false" />
+    <Property Name="CreateDate" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="MasterTransaction">
+    <Key>
+      <PropertyRef Name="MasterTransactionId" />
+    </Key>
+    <Property Name="MasterTransactionId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="CustomerId" Type="uniqueidentifier" />
+    <Property Name="LocationId" Type="uniqueidentifier" />
+    <Property Name="ReceiptId" Type="nvarchar" MaxLength="50" />
+    <Property Name="Notes" Type="nvarchar" MaxLength="50" />
+    <Property Name="UtcOffset" Type="int" />
+    <Property Name="TransactionDate" Type="datetime" />
+    <Property Name="ModifyDate" Type="datetime" />
+    <Property Name="CreateDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="RefundTransaction">
+    <Key>
+      <PropertyRef Name="RefundTransactionId" />
+    </Key>
+    <Property Name="RefundTransactionId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="MasterTransactionId" Type="uniqueidentifier" />
+    <Property Name="OrderTransactionId" Type="uniqueidentifier" />
+    <Property Name="ModifyDate" Type="datetime" />
+    <Property Name="CreateDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Transaction">
+    <Key>
+      <PropertyRef Name="TransactionId" />
+    </Key>
+    <Property Name="TransactionId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="MasterTransactionId" Type="uniqueidentifier" />
+    <Property Name="CustomerAccountId" Type="uniqueidentifier" />
+    <Property Name="CustomerId" Type="uniqueidentifier" />
+    <Property Name="TransactionDate" Type="datetime" />
+    <Property Name="TransactionTime" Type="datetime" />
+    <Property Name="Amount" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="SubTotal" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="TotalTax" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="TotalServiceFee" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="Notes" Type="nvarchar" MaxLength="50" />
+    <Property Name="RunningBalance" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="ModifyDate" Type="datetime" />
+    <Property Name="CreateDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Username" Type="nvarchar" MaxLength="50" />
+    <Property Name="Password" Type="nchar" MaxLength="10" />
+    <Property Name="ModifyDate" Type="datetime" Nullable="false" />
+    <Property Name="CreateDate" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="UserProfile">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="FirstName" Type="nvarchar" MaxLength="50" />
+    <Property Name="LastName" Type="nvarchar" MaxLength="50" />
+    <Property Name="Address1" Type="nvarchar" MaxLength="50" />
+    <Property Name="Address2" Type="nvarchar" MaxLength="50" />
+    <Property Name="City" Type="nvarchar" MaxLength="50" />
+    <Property Name="State" Type="nvarchar" MaxLength="50" />
+    <Property Name="ZipCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="ModifyDate" Type="datetime" Nullable="false" />
+    <Property Name="CreateDate" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="VoidTransaction">
+    <Key>
+      <PropertyRef Name="VoidTransactionId" />
+    </Key>
+    <Property Name="VoidTransactionId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="MasterTransactionId" Type="uniqueidentifier" />
+    <Property Name="RefundTransactionid" Type="uniqueidentifier" />
+    <Property Name="ModifyDate" Type="datetime" />
+    <Property Name="CreateDate" Type="datetime" />
+  </EntityType>
+  <Association Name="FK_Customer_User">
+    <End Role="User" Type="Self.User" Multiplicity="1" />
+    <End Role="Customer" Type="Self.Customer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Customer">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CustomerAccount_Customer">
+    <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+    <End Role="CustomerAccount" Type="Self.CustomerAccount" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CustomerId" />
+      </Principal>
+      <Dependent Role="CustomerAccount">
+        <PropertyRef Name="CustomerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MasterTransaction_Customer">
+    <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+    <End Role="MasterTransaction" Type="Self.MasterTransaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CustomerId" />
+      </Principal>
+      <Dependent Role="MasterTransaction">
+        <PropertyRef Name="CustomerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MasterTransaction_Location">
+    <End Role="Location" Type="Self.Location" Multiplicity="0..1" />
+    <End Role="MasterTransaction" Type="Self.MasterTransaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Location">
+        <PropertyRef Name="LocationId" />
+      </Principal>
+      <Dependent Role="MasterTransaction">
+        <PropertyRef Name="LocationId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_RefundTransaction_MasterTransaction">
+    <End Role="MasterTransaction" Type="Self.MasterTransaction" Multiplicity="0..1" />
+    <End Role="RefundTransaction" Type="Self.RefundTransaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MasterTransaction">
+        <PropertyRef Name="MasterTransactionId" />
+      </Principal>
+      <Dependent Role="RefundTransaction">
+        <PropertyRef Name="MasterTransactionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Transaction_Customer">
+    <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+    <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CustomerId" />
+      </Principal>
+      <Dependent Role="Transaction">
+        <PropertyRef Name="CustomerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Transaction_CustomerAccount">
+    <End Role="CustomerAccount" Type="Self.CustomerAccount" Multiplicity="0..1" />
+    <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CustomerAccount">
+        <PropertyRef Name="CustomerAccountId" />
+      </Principal>
+      <Dependent Role="Transaction">
+        <PropertyRef Name="CustomerAccountId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Transaction_MasterTransaction">
+    <End Role="MasterTransaction" Type="Self.MasterTransaction" Multiplicity="0..1" />
+    <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MasterTransaction">
+        <PropertyRef Name="MasterTransactionId" />
+      </Principal>
+      <Dependent Role="Transaction">
+        <PropertyRef Name="MasterTransactionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserProfile_User">
+    <End Role="User" Type="Self.User" Multiplicity="1" />
+    <End Role="UserProfile" Type="Self.UserProfile" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="UserProfile">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_VoidTransaction_MasterTransaction">
+    <End Role="MasterTransaction" Type="Self.MasterTransaction" Multiplicity="0..1" />
+    <End Role="VoidTransaction" Type="Self.VoidTransaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MasterTransaction">
+        <PropertyRef Name="MasterTransactionId" />
+      </Principal>
+      <Dependent Role="VoidTransaction">
+        <PropertyRef Name="MasterTransactionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_VoidTransaction_RefundTransaction">
+    <End Role="RefundTransaction" Type="Self.RefundTransaction" Multiplicity="0..1" />
+    <End Role="VoidTransaction" Type="Self.VoidTransaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="RefundTransaction">
+        <PropertyRef Name="RefundTransactionId" />
+      </Principal>
+      <Dependent Role="VoidTransaction">
+        <PropertyRef Name="RefundTransactionid" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="FourthCoffeeModelStoreContainer">
+    <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CustomerAccount" EntityType="Self.CustomerAccount" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Location" EntityType="Self.Location" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MasterTransaction" EntityType="Self.MasterTransaction" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="RefundTransaction" EntityType="Self.RefundTransaction" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Transaction" EntityType="Self.Transaction" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserProfile" EntityType="Self.UserProfile" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="VoidTransaction" EntityType="Self.VoidTransaction" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_Customer_User" Association="Self.FK_Customer_User">
+      <End Role="User" EntitySet="User" />
+      <End Role="Customer" EntitySet="Customer" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CustomerAccount_Customer" Association="Self.FK_CustomerAccount_Customer">
+      <End Role="Customer" EntitySet="Customer" />
+      <End Role="CustomerAccount" EntitySet="CustomerAccount" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MasterTransaction_Customer" Association="Self.FK_MasterTransaction_Customer">
+      <End Role="Customer" EntitySet="Customer" />
+      <End Role="MasterTransaction" EntitySet="MasterTransaction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MasterTransaction_Location" Association="Self.FK_MasterTransaction_Location">
+      <End Role="Location" EntitySet="Location" />
+      <End Role="MasterTransaction" EntitySet="MasterTransaction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_RefundTransaction_MasterTransaction" Association="Self.FK_RefundTransaction_MasterTransaction">
+      <End Role="MasterTransaction" EntitySet="MasterTransaction" />
+      <End Role="RefundTransaction" EntitySet="RefundTransaction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Transaction_Customer" Association="Self.FK_Transaction_Customer">
+      <End Role="Customer" EntitySet="Customer" />
+      <End Role="Transaction" EntitySet="Transaction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Transaction_CustomerAccount" Association="Self.FK_Transaction_CustomerAccount">
+      <End Role="CustomerAccount" EntitySet="CustomerAccount" />
+      <End Role="Transaction" EntitySet="Transaction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Transaction_MasterTransaction" Association="Self.FK_Transaction_MasterTransaction">
+      <End Role="MasterTransaction" EntitySet="MasterTransaction" />
+      <End Role="Transaction" EntitySet="Transaction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserProfile_User" Association="Self.FK_UserProfile_User">
+      <End Role="User" EntitySet="User" />
+      <End Role="UserProfile" EntitySet="UserProfile" />
+    </AssociationSet>
+    <AssociationSet Name="FK_VoidTransaction_MasterTransaction" Association="Self.FK_VoidTransaction_MasterTransaction">
+      <End Role="MasterTransaction" EntitySet="MasterTransaction" />
+      <End Role="VoidTransaction" EntitySet="VoidTransaction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_VoidTransaction_RefundTransaction" Association="Self.FK_VoidTransaction_RefundTransaction">
+      <End Role="RefundTransaction" EntitySet="RefundTransaction" />
+      <End Role="VoidTransaction" EntitySet="VoidTransaction" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

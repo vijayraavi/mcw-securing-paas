@@ -1,0 +1,22 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {		
+        "adminUsername": {
+			"reference": {
+				"keyVault": {
+					"id": "REPLACE_WITH_YOUR_KEY_VAULT_RESOURCE_URI"
+				},
+				"secretName": "VMUsername"
+			}
+		},
+		"adminPassword": {
+			"reference": {
+				"keyVault": {
+					"id": "REPLACE_WITH_YOUR_KEY_VAULT_RESOURCE_URI"
+				},
+				"secretName": "VMPassword"
+			}
+		}
+	}
+}

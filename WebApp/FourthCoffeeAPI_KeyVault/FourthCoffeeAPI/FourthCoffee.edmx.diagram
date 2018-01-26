@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="53465f57370449639ec867065032417c" Name="Diagram1">
+        <EntityTypeShape EntityType="FourthCoffeeModel.CustomerAccount" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FourthCoffeeModel.Location" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FourthCoffeeModel.RefundTransaction" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FourthCoffeeModel.Transaction" Width="1.5" PointX="2.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FourthCoffeeModel.User" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FourthCoffeeModel.UserProfile" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FourthCoffeeModel.VoidTransaction" Width="1.5" PointX="6.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FourthCoffeeModel.MasterTransaction" Width="1.5" PointX="7" PointY="8.125" />
+        <AssociationConnector Association="FourthCoffeeModel.FK_Transaction_CustomerAccount" />
+        <AssociationConnector Association="FourthCoffeeModel.FK_MasterTransaction_Location" />
+        <AssociationConnector Association="FourthCoffeeModel.FK_RefundTransaction_MasterTransaction" />
+        <AssociationConnector Association="FourthCoffeeModel.FK_Transaction_MasterTransaction" />
+        <AssociationConnector Association="FourthCoffeeModel.FK_VoidTransaction_MasterTransaction" />
+        <AssociationConnector Association="FourthCoffeeModel.FK_VoidTransaction_RefundTransaction" />
+        <AssociationConnector Association="FourthCoffeeModel.FK_UserProfile_User" />
+        <EntityTypeShape EntityType="FourthCoffeeModel.Customer" Width="1.5" PointX="7" PointY="12.625" />
+        <AssociationConnector Association="FourthCoffeeModel.FK_Customer_User" />
+        <AssociationConnector Association="FourthCoffeeModel.FK_CustomerAccount_Customer" />
+        <AssociationConnector Association="FourthCoffeeModel.FK_MasterTransaction_Customer" />
+        <AssociationConnector Association="FourthCoffeeModel.FK_Transaction_Customer" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
