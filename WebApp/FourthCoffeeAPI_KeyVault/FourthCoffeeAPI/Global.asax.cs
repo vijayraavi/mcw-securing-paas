@@ -15,7 +15,7 @@ namespace FourthCoffeeAPI
 {
     public class WebApiApplication : System.Web.HttpApplication
     {
-        protected void Application_Start()
+        async protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
@@ -26,7 +26,7 @@ namespace FourthCoffeeAPI
             HttpConfiguration config = GlobalConfiguration.Configuration;
             config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 
-            var kv = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(Util.GetToken));
+            var kv = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(Util.GetToken));            
             var sec = await kv.GetSecretAsync(WebConfigurationManager.AppSettings["SecretUri"]);
             Util.EncryptSecret = sec.Value;
         }

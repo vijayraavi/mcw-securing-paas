@@ -12,13 +12,14 @@ Login-AzureRmAccount;
 #change this to your extracted folder path
 $path = "C:\github\mcw-securing-paas\AzureTemplate";
 
-$resourceGroupName = "YOUR_RESOURCE_GROUP";
+$resourceGroupName = "paassecurity";
 
 #for output testing...
 #New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile "$path\keyvaulttest.json" -TemplateParameterFile "$path\azure-kv-parameters.json"
 
 #for production...
-New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile "$path\azure-kv-sql-deploy.json" -TemplateParameterFile "$path\azure-kv-parameters.json"
+$details = New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile "$path\azure-kv-sql-deploy.json" -TemplateParameterFile "$path\azure-kv-parameters.json"
+$details.Outputs;
 
 #Virtual Machine deployment
 #New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile "$path\azure-kv-vm-deploy.json" -TemplateParameterFile "$path\azure-kv-parameters.json"

@@ -533,18 +533,8 @@ function Attack_XSS($url)
 
 #Learn more about the rules here : https://github.com/SpiderLabs/owasp-modsecurity-crs/tree/v3.0/master/rules
 
-#$ipAddress = "10.0.0.0";
-#$url = "https://SITENAME.azurewebsites.net";
-#$ipAddress = "13.64.252.104";
-
-$ipAddress = "52.165.233.136";
-$ipAddress = "52.176.61.128"; #deployed web app...
-$ipAddress = "13.67.139.14";
-#$url = "http://$ipAddress";
-$url = "https://fourthcoffeeapi20180125124749.founthcoffee-cjg.p.azurewebsites.net/"
-
-#$ipAddress = read-host "what is your waf ip?";
-#$url = read-host "what is your url";
+$ipAddress = read-host "what is your waf ip?";
+$url = read-host "what is your url";
 
 Attack_HostHeaderIP $ipAddress;
 

@@ -91,7 +91,7 @@
                             "protocol": "*",
                             "sourcePortRange": "*",
                             "destinationPortRange": "*",
-                            "sourceAddressPrefix": "192.168.250.0/24",
+                            "sourceAddressPrefix": "10.0.0.0/16",
                             "destinationAddressPrefix": "*",
                             "access": "Allow",
                             "priority": 110,
@@ -326,7 +326,7 @@
                             "sourcePortRange": "*",
                             "destinationPortRange": "*",
                             "sourceAddressPrefix": "*",
-                            "destinationAddressPrefix": "192.168.250.0/24",
+                            "destinationAddressPrefix": "10.0.0.0/16",
                             "access": "Allow",
                             "priority": 160,
                             "direction": "Outbound",
@@ -362,7 +362,7 @@
                             "sourcePortRange": "*",
                             "destinationPortRange": "*",
                             "sourceAddressPrefix": "*",
-                            "destinationAddressPrefix": "192.168.250.0/23",
+                            "destinationAddressPrefix": "10.0.0.0/16",
                             "access": "Allow",
                             "priority": 180,
                             "direction": "Outbound",
@@ -621,8 +621,8 @@
             "properties": {
                 "name": "[parameters('paassecurity_ase_name')]",
                 "location": "[parameters('location')]",
-                "vnetName": "mainVNet",
-                "vnetResourceGroupName": "PaasSecurity",
+                "vnetName": "[variables('virtualNetworkName')]",
+                "vnetResourceGroupName": "[resourceGroup().name]",
                 "vnetSubnetName": "ase",
                 "virtualNetwork": {
                     "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
@@ -633,7 +633,7 @@
                 "multiRoleCount": 2,
                 "workerPools": null,
                 "ipsslAddressCount": 0,
-                "dnsSuffix": "passsecurity.me",
+                "dnsSuffix": "passsecurity.com",
                 "networkAccessControlList": [],
                 "frontEndScaleFactor": 15,
                 "apiManagementAccountId": null,
@@ -831,77 +831,7 @@
             "dependsOn": [
                 "[resourceId('Microsoft.Sql/servers', toLower(parameters('paassecurity_sql_name')))]"
             ]
-        },
-        {
-            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/keys/ServiceManaged'.",
-            "type": "Microsoft.Sql/servers/keys",
-            "kind": "servicemanaged",
-            "name": "[concat(toLower(parameters('paassecurity_sql_name')), '/', 'ServiceManaged')]",
-            "apiVersion": "2015-05-01-preview",
-            "scale": null,
-            "properties": {
-                "serverKeyType": "ServiceManaged"
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Sql/servers', toLower(parameters('paassecurity_sql_name')))]"
-            ]
-        },
-        {
-            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/SampleDB/advisors/CreateIndex'.",
-            "type": "Microsoft.Sql/servers/databases/advisors",
-            "name": "[concat(toLower(parameters('paassecurity_sql_name')), '/', variables('sampleDbName'), '/', 'CreateIndex')]",
-            "apiVersion": "2014-04-01",
-            "scale": null,
-            "properties": {
-                "autoExecuteValue": "Disabled"
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Sql/servers', toLower(parameters('paassecurity_sql_name')))]",
-                "[resourceId('Microsoft.Sql/servers/databases', toLower(parameters('paassecurity_sql_name')), variables('sampleDbName'))]"
-            ]
-        },
-        {
-            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/SampleDB/advisors/DropIndex'.",
-            "type": "Microsoft.Sql/servers/databases/advisors",
-            "name": "[concat(toLower(parameters('paassecurity_sql_name')), '/', variables('sampleDbName'), '/', 'DropIndex')]",
-            "apiVersion": "2014-04-01",
-            "scale": null,
-            "properties": {
-                "autoExecuteValue": "Disabled"
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Sql/servers', toLower(parameters('paassecurity_sql_name')))]",
-                "[resourceId('Microsoft.Sql/servers/databases', toLower(parameters('paassecurity_sql_name')), variables('sampleDbName'))]"
-            ]
-        },
-        {
-            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/SampleDB/advisors/DbParameterization'.",
-            "type": "Microsoft.Sql/servers/databases/advisors",
-            "name": "[concat(toLower(parameters('paassecurity_sql_name')), '/', variables('sampleDbName'), '/', 'DbParameterization')]",
-            "apiVersion": "2014-04-01",
-            "scale": null,
-            "properties": {
-                "autoExecuteValue": "Disabled"
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Sql/servers', toLower(parameters('paassecurity_sql_name')))]",
-                "[resourceId('Microsoft.Sql/servers/databases', toLower(parameters('paassecurity_sql_name')), variables('sampleDbName'))]"
-            ]
-        },
-        {
-            "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/SampleDB/advisors/ForceLastGoodPlan'.",
-            "type": "Microsoft.Sql/servers/databases/advisors",
-            "name": "[concat(toLower(parameters('paassecurity_sql_name')), '/', variables('sampleDbName'), '/', 'ForceLastGoodPlan')]",
-            "apiVersion": "2014-04-01",
-            "scale": null,
-            "properties": {
-                "autoExecuteValue": "Disabled"
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Sql/servers', toLower(parameters('paassecurity_sql_name')))]",
-                "[resourceId('Microsoft.Sql/servers/databases', toLower(parameters('paassecurity_sql_name')), variables('sampleDbName'))]"
-            ]
-        },
+        },                        
         {
             "comments": "Generalized from resource: '/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/PaasSecurity/providers/Microsoft.Sql/servers/paassecurity-cjg/databases/SampleDB/auditingPolicies/Default'.",
             "type": "Microsoft.Sql/servers/databases/auditingPolicies",
@@ -1001,10 +931,7 @@
             "properties": {
               "BackendAddresses": [
                 {
-                  "IpAddress": "10.0.1.10"
-                },
-                {
-                  "IpAddress": "10.0.1.11"
+                  "IpAddress": "10.0.4.11"
                 }
               ]
             }
