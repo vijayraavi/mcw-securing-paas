@@ -5,7 +5,7 @@
         "adminUsername": {
 			"reference": {
 				"keyVault": {
-					"id": "/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/paassecurity/providers/Microsoft.KeyVault/vaults/paassecuritykeyvaultcjg"
+					"id": "REPLACE_WITH_YOUR_KEY_VAULT_RESOURCE_URI"
 				},
 				"secretName": "VMUsername"
 			}
@@ -13,7 +13,7 @@
 		"adminPassword": {
 			"reference": {
 				"keyVault": {
-					"id": "/subscriptions/e433f371-e5e9-4238-abc2-7c38aa596a18/resourceGroups/paassecurity/providers/Microsoft.KeyVault/vaults/paassecuritykeyvaultcjg"
+					"id": "REPLACE_WITH_YOUR_KEY_VAULT_RESOURCE_URI"
 				},
 				"secretName": "VMPassword"
 			}
