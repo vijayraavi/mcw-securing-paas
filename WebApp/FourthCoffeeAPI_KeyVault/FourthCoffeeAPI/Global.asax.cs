@@ -38,9 +38,7 @@ namespace FourthCoffeeAPI
             SqlColumnEncryptionAzureKeyVaultProvider azureKeyVaultProvider = new SqlColumnEncryptionAzureKeyVaultProvider(Util.GetToken);
             Dictionary<string, SqlColumnEncryptionKeyStoreProvider> providers = new Dictionary<string, SqlColumnEncryptionKeyStoreProvider>();
             providers.Add(SqlColumnEncryptionAzureKeyVaultProvider.ProviderName, azureKeyVaultProvider);
-            SqlConnection.RegisterColumnEncryptionKeyStoreProviders(providers);
-
-            //Util.EncryptSecret = "data source=cjgsecurity.database.windows.net;initial catalog=FourthCoffee;user id=store;password=p@ssword1rocks;MultipleActiveResultSets=True;App=EntityFramework;Column Encryption Setting=Enabled";
+            SqlConnection.RegisterColumnEncryptionKeyStoreProviders(providers);            
             
             //Get an access token for the Key Vault to get the secret out...
             var kv = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(Util.GetToken));            
