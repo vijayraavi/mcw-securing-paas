@@ -17,9 +17,9 @@ namespace FourthCoffeeAPI
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Customer()
         {
-            this.CustomerAccounts = new HashSet<CustomerAccount>();
             this.MasterTransactions = new HashSet<MasterTransaction>();
             this.Transactions = new HashSet<Transaction>();
+            this.CustomerAccounts = new HashSet<CustomerAccount>();
         }
     
         public System.Guid CustomerId { get; set; }
@@ -29,10 +29,10 @@ namespace FourthCoffeeAPI
     
         public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CustomerAccount> CustomerAccounts { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MasterTransaction> MasterTransactions { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Transaction> Transactions { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CustomerAccount> CustomerAccounts { get; set; }
     }
 }

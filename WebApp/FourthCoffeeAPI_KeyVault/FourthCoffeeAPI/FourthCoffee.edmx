@@ -5,6 +5,18 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="FourthCoffeeModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ApplicationLog">
+          <Key>
+            <PropertyRef Name="ApplicationLogId" />
+          </Key>
+          <Property Name="ApplicationLogId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="MessageType" Type="nvarchar" MaxLength="50" />
+          <Property Name="Definition" Type="nvarchar" MaxLength="50" />
+          <Property Name="LogDate" Type="nvarchar" MaxLength="50" />
+          <Property Name="MessageCode" Type="int" />
+          <Property Name="ModifyDate" Type="datetime" />
+          <Property Name="CreateDate" Type="datetime" />
+        </EntityType>
         <EntityType Name="Customer">
           <Key>
             <PropertyRef Name="CustomerId" />
@@ -256,6 +268,7 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="FourthCoffeeModelStoreContainer">
+          <EntitySet Name="ApplicationLog" EntityType="Self.ApplicationLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerAccount" EntityType="Self.CustomerAccount" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Location" EntityType="Self.Location" Schema="dbo" store:Type="Tables" />
@@ -314,32 +327,92 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="FourthCoffeeModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="CustomerAccount">
+        <EntityContainer Name="FourthCoffeeEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ApplicationLogs" EntityType="FourthCoffeeModel.ApplicationLog" />
+          <EntitySet Name="Customers" EntityType="FourthCoffeeModel.Customer" />
+          <EntitySet Name="Locations" EntityType="FourthCoffeeModel.Location" />
+          <EntitySet Name="MasterTransactions" EntityType="FourthCoffeeModel.MasterTransaction" />
+          <EntitySet Name="RefundTransactions" EntityType="FourthCoffeeModel.RefundTransaction" />
+          <EntitySet Name="Transactions" EntityType="FourthCoffeeModel.Transaction" />
+          <EntitySet Name="Users" EntityType="FourthCoffeeModel.User" />
+          <EntitySet Name="UserProfiles" EntityType="FourthCoffeeModel.UserProfile" />
+          <EntitySet Name="VoidTransactions" EntityType="FourthCoffeeModel.VoidTransaction" />
+          <AssociationSet Name="FK_Customer_User" Association="FourthCoffeeModel.FK_Customer_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Customer" EntitySet="Customers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MasterTransaction_Customer" Association="FourthCoffeeModel.FK_MasterTransaction_Customer">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="MasterTransaction" EntitySet="MasterTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Transaction_Customer" Association="FourthCoffeeModel.FK_Transaction_Customer">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="Transaction" EntitySet="Transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MasterTransaction_Location" Association="FourthCoffeeModel.FK_MasterTransaction_Location">
+            <End Role="Location" EntitySet="Locations" />
+            <End Role="MasterTransaction" EntitySet="MasterTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RefundTransaction_MasterTransaction" Association="FourthCoffeeModel.FK_RefundTransaction_MasterTransaction">
+            <End Role="MasterTransaction" EntitySet="MasterTransactions" />
+            <End Role="RefundTransaction" EntitySet="RefundTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Transaction_MasterTransaction" Association="FourthCoffeeModel.FK_Transaction_MasterTransaction">
+            <End Role="MasterTransaction" EntitySet="MasterTransactions" />
+            <End Role="Transaction" EntitySet="Transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VoidTransaction_MasterTransaction" Association="FourthCoffeeModel.FK_VoidTransaction_MasterTransaction">
+            <End Role="MasterTransaction" EntitySet="MasterTransactions" />
+            <End Role="VoidTransaction" EntitySet="VoidTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VoidTransaction_RefundTransaction" Association="FourthCoffeeModel.FK_VoidTransaction_RefundTransaction">
+            <End Role="RefundTransaction" EntitySet="RefundTransactions" />
+            <End Role="VoidTransaction" EntitySet="VoidTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserProfile_User" Association="FourthCoffeeModel.FK_UserProfile_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="UserProfile" EntitySet="UserProfiles" />
+          </AssociationSet>
+          <EntitySet Name="CustomerAccounts" EntityType="FourthCoffeeModel.CustomerAccount" />
+          <AssociationSet Name="FK_CustomerAccount_Customer" Association="FourthCoffeeModel.FK_CustomerAccount_Customer">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="CustomerAccount" EntitySet="CustomerAccounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Transaction_CustomerAccount" Association="FourthCoffeeModel.FK_Transaction_CustomerAccount">
+            <End Role="CustomerAccount" EntitySet="CustomerAccounts" />
+            <End Role="Transaction" EntitySet="Transactions" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="ApplicationLog">
           <Key>
-            <PropertyRef Name="CustomerAccountId" />
+            <PropertyRef Name="ApplicationLogId" />
           </Key>
-          <Property Name="CustomerAccountId" Type="Guid" Nullable="false" />
-          <Property Name="AccountType" Type="Int32" />
+          <Property Name="ApplicationLogId" Type="Guid" Nullable="false" />
+          <Property Name="MessageType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Definition" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LogDate" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MessageCode" Type="Int32" />
+          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="CustomerId" />
+          </Key>
           <Property Name="CustomerId" Type="Guid" Nullable="false" />
-          <Property Name="Balance" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="CreditCardNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Issuer" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="IncrementAmount" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="ExpirationDate" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Pin" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ModifyDate" Type="DateTime" Precision="3" Nullable="false" />
-          <Property Name="CreateDate" Type="DateTime" Precision="3" Nullable="false" />
-          <NavigationProperty Name="Transactions" Relationship="FourthCoffeeModel.FK_Transaction_CustomerAccount" FromRole="CustomerAccount" ToRole="Transaction" />
-          <NavigationProperty Name="Customer" Relationship="FourthCoffeeModel.FK_CustomerAccount_Customer" FromRole="CustomerAccount" ToRole="Customer" />
+          <Property Name="UserId" Type="Guid" Nullable="false" />
+          <Property Name="ModifyDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="User" Relationship="FourthCoffeeModel.FK_Customer_User" FromRole="Customer" ToRole="User" />
+          <NavigationProperty Name="MasterTransactions" Relationship="FourthCoffeeModel.FK_MasterTransaction_Customer" FromRole="Customer" ToRole="MasterTransaction" />
+          <NavigationProperty Name="Transactions" Relationship="FourthCoffeeModel.FK_Transaction_Customer" FromRole="Customer" ToRole="Transaction" />
+          <NavigationProperty Name="CustomerAccounts" Relationship="FourthCoffeeModel.FK_CustomerAccount_Customer" FromRole="Customer" ToRole="CustomerAccount" />
         </EntityType>
         <EntityType Name="Location">
           <Key>
             <PropertyRef Name="LocationId" />
           </Key>
           <Property Name="LocationId" Type="Guid" Nullable="false" />
-          <Property Name="ModifyDate" Type="DateTime" Precision="3" Nullable="false" />
-          <Property Name="CreateDate" Type="DateTime" Precision="3" Nullable="false" />
-          <NavigationProperty Name="MasterTransactions" Relationship="FourthCoffeeModel.FK_MasterTransaction_Location" FromRole="Location" ToRole="MasterTransaction" />
           <Property Name="LongName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ShortName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Address1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -347,6 +420,28 @@
           <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="State" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ZipCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ModifyDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="MasterTransactions" Relationship="FourthCoffeeModel.FK_MasterTransaction_Location" FromRole="Location" ToRole="MasterTransaction" />
+        </EntityType>
+        <EntityType Name="MasterTransaction">
+          <Key>
+            <PropertyRef Name="MasterTransactionId" />
+          </Key>
+          <Property Name="MasterTransactionId" Type="Guid" Nullable="false" />
+          <Property Name="CustomerId" Type="Guid" />
+          <Property Name="LocationId" Type="Guid" />
+          <Property Name="ReceiptId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Notes" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UtcOffset" Type="Int32" />
+          <Property Name="TransactionDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Customer" Relationship="FourthCoffeeModel.FK_MasterTransaction_Customer" FromRole="MasterTransaction" ToRole="Customer" />
+          <NavigationProperty Name="Location" Relationship="FourthCoffeeModel.FK_MasterTransaction_Location" FromRole="MasterTransaction" ToRole="Location" />
+          <NavigationProperty Name="RefundTransactions" Relationship="FourthCoffeeModel.FK_RefundTransaction_MasterTransaction" FromRole="MasterTransaction" ToRole="RefundTransaction" />
+          <NavigationProperty Name="Transactions" Relationship="FourthCoffeeModel.FK_Transaction_MasterTransaction" FromRole="MasterTransaction" ToRole="Transaction" />
+          <NavigationProperty Name="VoidTransactions" Relationship="FourthCoffeeModel.FK_VoidTransaction_MasterTransaction" FromRole="MasterTransaction" ToRole="VoidTransaction" />
         </EntityType>
         <EntityType Name="RefundTransaction">
           <Key>
@@ -378,9 +473,9 @@
           <Property Name="RunningBalance" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="ModifyDate" Type="DateTime" Precision="3" />
           <Property Name="CreateDate" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="CustomerAccount" Relationship="FourthCoffeeModel.FK_Transaction_CustomerAccount" FromRole="Transaction" ToRole="CustomerAccount" />
-          <NavigationProperty Name="MasterTransaction" Relationship="FourthCoffeeModel.FK_Transaction_MasterTransaction" FromRole="Transaction" ToRole="MasterTransaction" />
           <NavigationProperty Name="Customer" Relationship="FourthCoffeeModel.FK_Transaction_Customer" FromRole="Transaction" ToRole="Customer" />
+          <NavigationProperty Name="MasterTransaction" Relationship="FourthCoffeeModel.FK_Transaction_MasterTransaction" FromRole="Transaction" ToRole="MasterTransaction" />
+          <NavigationProperty Name="CustomerAccount" Relationship="FourthCoffeeModel.FK_Transaction_CustomerAccount" FromRole="Transaction" ToRole="CustomerAccount" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -388,11 +483,11 @@
           </Key>
           <Property Name="UserId" Type="Guid" Nullable="false" />
           <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ModifyDate" Type="DateTime" Precision="3" Nullable="false" />
-          <Property Name="CreateDate" Type="DateTime" Precision="3" Nullable="false" />
           <Property Name="Password" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
-          <NavigationProperty Name="UserProfile" Relationship="FourthCoffeeModel.FK_UserProfile_User" FromRole="User" ToRole="UserProfile" />
+          <Property Name="ModifyDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Customers" Relationship="FourthCoffeeModel.FK_Customer_User" FromRole="User" ToRole="Customer" />
+          <NavigationProperty Name="UserProfile" Relationship="FourthCoffeeModel.FK_UserProfile_User" FromRole="User" ToRole="UserProfile" />
         </EntityType>
         <EntityType Name="UserProfile">
           <Key>
@@ -403,12 +498,12 @@
           <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Address1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Address2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ModifyDate" Type="DateTime" Precision="3" Nullable="false" />
-          <Property Name="CreateDate" Type="DateTime" Precision="3" Nullable="false" />
-          <NavigationProperty Name="User" Relationship="FourthCoffeeModel.FK_UserProfile_User" FromRole="UserProfile" ToRole="User" />
           <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="State" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ZipCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ModifyDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="User" Relationship="FourthCoffeeModel.FK_UserProfile_User" FromRole="UserProfile" ToRole="User" />
         </EntityType>
         <EntityType Name="VoidTransaction">
           <Key>
@@ -422,89 +517,39 @@
           <NavigationProperty Name="MasterTransaction" Relationship="FourthCoffeeModel.FK_VoidTransaction_MasterTransaction" FromRole="VoidTransaction" ToRole="MasterTransaction" />
           <NavigationProperty Name="RefundTransaction" Relationship="FourthCoffeeModel.FK_VoidTransaction_RefundTransaction" FromRole="VoidTransaction" ToRole="RefundTransaction" />
         </EntityType>
-        <EntityContainer Name="FourthCoffeeEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="CustomerAccounts" EntityType="Self.CustomerAccount" />
-          <EntitySet Name="Locations" EntityType="Self.Location" />
-          <EntitySet Name="RefundTransactions" EntityType="Self.RefundTransaction" />
-          <EntitySet Name="Transactions" EntityType="Self.Transaction" />
-          <EntitySet Name="Users" EntityType="Self.User" />
-          <EntitySet Name="UserProfiles" EntityType="Self.UserProfile" />
-          <EntitySet Name="VoidTransactions" EntityType="Self.VoidTransaction" />
-          <EntitySet Name="MasterTransactions" EntityType="FourthCoffeeModel.MasterTransaction" />
-          <AssociationSet Name="FK_Transaction_CustomerAccount" Association="FourthCoffeeModel.FK_Transaction_CustomerAccount">
-            <End Role="CustomerAccount" EntitySet="CustomerAccounts" />
-            <End Role="Transaction" EntitySet="Transactions" />
-          </AssociationSet>
-          <AssociationSet Name="FK_MasterTransaction_Location" Association="FourthCoffeeModel.FK_MasterTransaction_Location">
-            <End Role="Location" EntitySet="Locations" />
-            <End Role="MasterTransaction" EntitySet="MasterTransactions" />
-          </AssociationSet>
-          <AssociationSet Name="FK_RefundTransaction_MasterTransaction" Association="FourthCoffeeModel.FK_RefundTransaction_MasterTransaction">
-            <End Role="MasterTransaction" EntitySet="MasterTransactions" />
-            <End Role="RefundTransaction" EntitySet="RefundTransactions" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Transaction_MasterTransaction" Association="FourthCoffeeModel.FK_Transaction_MasterTransaction">
-            <End Role="MasterTransaction" EntitySet="MasterTransactions" />
-            <End Role="Transaction" EntitySet="Transactions" />
-          </AssociationSet>
-          <AssociationSet Name="FK_VoidTransaction_MasterTransaction" Association="FourthCoffeeModel.FK_VoidTransaction_MasterTransaction">
-            <End Role="MasterTransaction" EntitySet="MasterTransactions" />
-            <End Role="VoidTransaction" EntitySet="VoidTransactions" />
-          </AssociationSet>
-          <AssociationSet Name="FK_VoidTransaction_RefundTransaction" Association="FourthCoffeeModel.FK_VoidTransaction_RefundTransaction">
-            <End Role="RefundTransaction" EntitySet="RefundTransactions" />
-            <End Role="VoidTransaction" EntitySet="VoidTransactions" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UserProfile_User" Association="FourthCoffeeModel.FK_UserProfile_User">
-            <End Role="User" EntitySet="Users" />
-            <End Role="UserProfile" EntitySet="UserProfiles" />
-          </AssociationSet>
-          <EntitySet Name="Customers" EntityType="FourthCoffeeModel.Customer" />
-          <AssociationSet Name="FK_Customer_User" Association="FourthCoffeeModel.FK_Customer_User">
-            <End Role="User" EntitySet="Users" />
-            <End Role="Customer" EntitySet="Customers" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CustomerAccount_Customer" Association="FourthCoffeeModel.FK_CustomerAccount_Customer">
-            <End Role="Customer" EntitySet="Customers" />
-            <End Role="CustomerAccount" EntitySet="CustomerAccounts" />
-          </AssociationSet>
-          <AssociationSet Name="FK_MasterTransaction_Customer" Association="FourthCoffeeModel.FK_MasterTransaction_Customer">
-            <End Role="Customer" EntitySet="Customers" />
-            <End Role="MasterTransaction" EntitySet="MasterTransactions" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Transaction_Customer" Association="FourthCoffeeModel.FK_Transaction_Customer">
-            <End Role="Customer" EntitySet="Customers" />
-            <End Role="Transaction" EntitySet="Transactions" />
-          </AssociationSet>
-          </EntityContainer>
-        <EntityType Name="MasterTransaction">
-          <Key>
-            <PropertyRef Name="MasterTransactionId" />
-          </Key>
-          <Property Name="MasterTransactionId" Type="Guid" Nullable="false" />
-          <Property Name="CustomerId" Type="Guid" />
-          <Property Name="LocationId" Type="Guid" />
-          <Property Name="ReceiptId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Notes" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="UtcOffset" Type="Int32" />
-          <Property Name="TransactionDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
-          <Property Name="CreateDate" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Location" Relationship="FourthCoffeeModel.FK_MasterTransaction_Location" FromRole="MasterTransaction" ToRole="Location" />
-          <NavigationProperty Name="RefundTransactions" Relationship="FourthCoffeeModel.FK_RefundTransaction_MasterTransaction" FromRole="MasterTransaction" ToRole="RefundTransaction" />
-          <NavigationProperty Name="Transactions" Relationship="FourthCoffeeModel.FK_Transaction_MasterTransaction" FromRole="MasterTransaction" ToRole="Transaction" />
-          <NavigationProperty Name="VoidTransactions" Relationship="FourthCoffeeModel.FK_VoidTransaction_MasterTransaction" FromRole="MasterTransaction" ToRole="VoidTransaction" />
-          <NavigationProperty Name="Customer" Relationship="FourthCoffeeModel.FK_MasterTransaction_Customer" FromRole="MasterTransaction" ToRole="Customer" />
-        </EntityType>
-        <Association Name="FK_Transaction_CustomerAccount">
-          <End Type="FourthCoffeeModel.CustomerAccount" Role="CustomerAccount" Multiplicity="0..1" />
+        <Association Name="FK_Customer_User">
+          <End Type="FourthCoffeeModel.User" Role="User" Multiplicity="1" />
+          <End Type="FourthCoffeeModel.Customer" Role="Customer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Customer">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MasterTransaction_Customer">
+          <End Type="FourthCoffeeModel.Customer" Role="Customer" Multiplicity="0..1" />
+          <End Type="FourthCoffeeModel.MasterTransaction" Role="MasterTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="CustomerId" />
+            </Principal>
+            <Dependent Role="MasterTransaction">
+              <PropertyRef Name="CustomerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Transaction_Customer">
+          <End Type="FourthCoffeeModel.Customer" Role="Customer" Multiplicity="0..1" />
           <End Type="FourthCoffeeModel.Transaction" Role="Transaction" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="CustomerAccount">
-              <PropertyRef Name="CustomerAccountId" />
+            <Principal Role="Customer">
+              <PropertyRef Name="CustomerId" />
             </Principal>
             <Dependent Role="Transaction">
-              <PropertyRef Name="CustomerAccountId" />
+              <PropertyRef Name="CustomerId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -580,31 +625,24 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="Customer">
+        <EntityType Name="CustomerAccount">
           <Key>
-            <PropertyRef Name="CustomerId" />
+            <PropertyRef Name="CustomerAccountId" />
           </Key>
+          <Property Name="CustomerAccountId" Type="Guid" Nullable="false" />
+          <Property Name="AccountType" Type="Int32" />
           <Property Name="CustomerId" Type="Guid" Nullable="false" />
-          <Property Name="UserId" Type="Guid" Nullable="false" />
+          <Property Name="Balance" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="CreditCardNumber" Type="String" Nullable="false" />
+          <Property Name="Issuer" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IncrementAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="ExpirationDate" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Pin" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ModifyDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="User" Relationship="FourthCoffeeModel.FK_Customer_User" FromRole="Customer" ToRole="User" />
-          <NavigationProperty Name="CustomerAccounts" Relationship="FourthCoffeeModel.FK_CustomerAccount_Customer" FromRole="Customer" ToRole="CustomerAccount" />
-          <NavigationProperty Name="MasterTransactions" Relationship="FourthCoffeeModel.FK_MasterTransaction_Customer" FromRole="Customer" ToRole="MasterTransaction" />
-          <NavigationProperty Name="Transactions" Relationship="FourthCoffeeModel.FK_Transaction_Customer" FromRole="Customer" ToRole="Transaction" />
+          <NavigationProperty Name="Customer" Relationship="FourthCoffeeModel.FK_CustomerAccount_Customer" FromRole="CustomerAccount" ToRole="Customer" />
+          <NavigationProperty Name="Transactions" Relationship="FourthCoffeeModel.FK_Transaction_CustomerAccount" FromRole="CustomerAccount" ToRole="Transaction" />
         </EntityType>
-        <Association Name="FK_Customer_User">
-          <End Type="FourthCoffeeModel.User" Role="User" Multiplicity="1" />
-          <End Type="FourthCoffeeModel.Customer" Role="Customer" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="Customer">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_CustomerAccount_Customer">
           <End Type="FourthCoffeeModel.Customer" Role="Customer" Multiplicity="1" />
           <End Type="FourthCoffeeModel.CustomerAccount" Role="CustomerAccount" Multiplicity="*" />
@@ -617,27 +655,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_MasterTransaction_Customer">
-          <End Type="FourthCoffeeModel.Customer" Role="Customer" Multiplicity="0..1" />
-          <End Type="FourthCoffeeModel.MasterTransaction" Role="MasterTransaction" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Customer">
-              <PropertyRef Name="CustomerId" />
-            </Principal>
-            <Dependent Role="MasterTransaction">
-              <PropertyRef Name="CustomerId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Transaction_Customer">
-          <End Type="FourthCoffeeModel.Customer" Role="Customer" Multiplicity="0..1" />
+        <Association Name="FK_Transaction_CustomerAccount">
+          <End Type="FourthCoffeeModel.CustomerAccount" Role="CustomerAccount" Multiplicity="0..1" />
           <End Type="FourthCoffeeModel.Transaction" Role="Transaction" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Customer">
-              <PropertyRef Name="CustomerId" />
+            <Principal Role="CustomerAccount">
+              <PropertyRef Name="CustomerAccountId" />
             </Principal>
             <Dependent Role="Transaction">
-              <PropertyRef Name="CustomerId" />
+              <PropertyRef Name="CustomerAccountId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -647,26 +673,34 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="FourthCoffeeModelStoreContainer" CdmEntityContainer="FourthCoffeeEntities">
-          <EntitySetMapping Name="CustomerAccounts">
-            <EntityTypeMapping TypeName="FourthCoffeeModel.CustomerAccount">
-              <MappingFragment StoreEntitySet="CustomerAccount">
-                <ScalarProperty Name="CustomerAccountId" ColumnName="CustomerAccountId" />
-                <ScalarProperty Name="AccountType" ColumnName="AccountType" />
-                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
-                <ScalarProperty Name="Balance" ColumnName="Balance" />
-                <ScalarProperty Name="CreditCardNumber" ColumnName="CreditCardNumber" />
-                <ScalarProperty Name="Issuer" ColumnName="Issuer" />
-                <ScalarProperty Name="IncrementAmount" ColumnName="IncrementAmount" />
-                <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
-                <ScalarProperty Name="Pin" ColumnName="Pin" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+          <EntitySetMapping Name="ApplicationLogs">
+            <EntityTypeMapping TypeName="FourthCoffeeModel.ApplicationLog">
+              <MappingFragment StoreEntitySet="ApplicationLog">
                 <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="MessageCode" ColumnName="MessageCode" />
+                <ScalarProperty Name="LogDate" ColumnName="LogDate" />
+                <ScalarProperty Name="Definition" ColumnName="Definition" />
+                <ScalarProperty Name="MessageType" ColumnName="MessageType" />
+                <ScalarProperty Name="ApplicationLogId" ColumnName="ApplicationLogId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Customers">
+            <EntityTypeMapping TypeName="FourthCoffeeModel.Customer">
+              <MappingFragment StoreEntitySet="Customer">
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Locations">
             <EntityTypeMapping TypeName="FourthCoffeeModel.Location">
               <MappingFragment StoreEntitySet="Location">
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
                 <ScalarProperty Name="ZipCode" ColumnName="ZipCode" />
                 <ScalarProperty Name="State" ColumnName="State" />
                 <ScalarProperty Name="City" ColumnName="City" />
@@ -675,77 +709,6 @@
                 <ScalarProperty Name="ShortName" ColumnName="ShortName" />
                 <ScalarProperty Name="LongName" ColumnName="LongName" />
                 <ScalarProperty Name="LocationId" ColumnName="LocationId" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="RefundTransactions">
-            <EntityTypeMapping TypeName="FourthCoffeeModel.RefundTransaction">
-              <MappingFragment StoreEntitySet="RefundTransaction">
-                <ScalarProperty Name="RefundTransactionId" ColumnName="RefundTransactionId" />
-                <ScalarProperty Name="MasterTransactionId" ColumnName="MasterTransactionId" />
-                <ScalarProperty Name="OrderTransactionId" ColumnName="OrderTransactionId" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Transactions">
-            <EntityTypeMapping TypeName="FourthCoffeeModel.Transaction">
-              <MappingFragment StoreEntitySet="Transaction">
-                <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
-                <ScalarProperty Name="MasterTransactionId" ColumnName="MasterTransactionId" />
-                <ScalarProperty Name="CustomerAccountId" ColumnName="CustomerAccountId" />
-                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
-                <ScalarProperty Name="TransactionDate" ColumnName="TransactionDate" />
-                <ScalarProperty Name="TransactionTime" ColumnName="TransactionTime" />
-                <ScalarProperty Name="Amount" ColumnName="Amount" />
-                <ScalarProperty Name="SubTotal" ColumnName="SubTotal" />
-                <ScalarProperty Name="TotalTax" ColumnName="TotalTax" />
-                <ScalarProperty Name="TotalServiceFee" ColumnName="TotalServiceFee" />
-                <ScalarProperty Name="Notes" ColumnName="Notes" />
-                <ScalarProperty Name="RunningBalance" ColumnName="RunningBalance" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="FourthCoffeeModel.User">
-              <MappingFragment StoreEntitySet="User">
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="Username" ColumnName="Username" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="UserProfiles">
-            <EntityTypeMapping TypeName="FourthCoffeeModel.UserProfile">
-              <MappingFragment StoreEntitySet="UserProfile">
-                <ScalarProperty Name="ZipCode" ColumnName="ZipCode" />
-                <ScalarProperty Name="State" ColumnName="State" />
-                <ScalarProperty Name="City" ColumnName="City" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
-                <ScalarProperty Name="LastName" ColumnName="LastName" />
-                <ScalarProperty Name="Address1" ColumnName="Address1" />
-                <ScalarProperty Name="Address2" ColumnName="Address2" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="VoidTransactions">
-            <EntityTypeMapping TypeName="FourthCoffeeModel.VoidTransaction">
-              <MappingFragment StoreEntitySet="VoidTransaction">
-                <ScalarProperty Name="VoidTransactionId" ColumnName="VoidTransactionId" />
-                <ScalarProperty Name="MasterTransactionId" ColumnName="MasterTransactionId" />
-                <ScalarProperty Name="RefundTransactionid" ColumnName="RefundTransactionid" />
-                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -764,13 +727,89 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Customers">
-            <EntityTypeMapping TypeName="FourthCoffeeModel.Customer">
-              <MappingFragment StoreEntitySet="Customer">
+          <EntitySetMapping Name="RefundTransactions">
+            <EntityTypeMapping TypeName="FourthCoffeeModel.RefundTransaction">
+              <MappingFragment StoreEntitySet="RefundTransaction">
                 <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
                 <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="OrderTransactionId" ColumnName="OrderTransactionId" />
+                <ScalarProperty Name="MasterTransactionId" ColumnName="MasterTransactionId" />
+                <ScalarProperty Name="RefundTransactionId" ColumnName="RefundTransactionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Transactions">
+            <EntityTypeMapping TypeName="FourthCoffeeModel.Transaction">
+              <MappingFragment StoreEntitySet="Transaction">
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="RunningBalance" ColumnName="RunningBalance" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="TotalServiceFee" ColumnName="TotalServiceFee" />
+                <ScalarProperty Name="TotalTax" ColumnName="TotalTax" />
+                <ScalarProperty Name="SubTotal" ColumnName="SubTotal" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="TransactionTime" ColumnName="TransactionTime" />
+                <ScalarProperty Name="TransactionDate" ColumnName="TransactionDate" />
                 <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="CustomerAccountId" ColumnName="CustomerAccountId" />
+                <ScalarProperty Name="MasterTransactionId" ColumnName="MasterTransactionId" />
+                <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="FourthCoffeeModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserProfiles">
+            <EntityTypeMapping TypeName="FourthCoffeeModel.UserProfile">
+              <MappingFragment StoreEntitySet="UserProfile">
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="ZipCode" ColumnName="ZipCode" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Address2" ColumnName="Address2" />
+                <ScalarProperty Name="Address1" ColumnName="Address1" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VoidTransactions">
+            <EntityTypeMapping TypeName="FourthCoffeeModel.VoidTransaction">
+              <MappingFragment StoreEntitySet="VoidTransaction">
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="RefundTransactionid" ColumnName="RefundTransactionid" />
+                <ScalarProperty Name="MasterTransactionId" ColumnName="MasterTransactionId" />
+                <ScalarProperty Name="VoidTransactionId" ColumnName="VoidTransactionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CustomerAccounts">
+            <EntityTypeMapping TypeName="FourthCoffeeModel.CustomerAccount">
+              <MappingFragment StoreEntitySet="CustomerAccount">
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="Pin" ColumnName="Pin" />
+                <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+                <ScalarProperty Name="IncrementAmount" ColumnName="IncrementAmount" />
+                <ScalarProperty Name="Issuer" ColumnName="Issuer" />
+                <ScalarProperty Name="CreditCardNumber" ColumnName="CreditCardNumber" />
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="AccountType" ColumnName="AccountType" />
+                <ScalarProperty Name="CustomerAccountId" ColumnName="CustomerAccountId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -168,7 +168,6 @@ C:\github\mcw-securing-paas\WebApp\FourthCoffeeAPI_KeyVault\FourthCoffeeAPI\bin\
 C:\github\mcw-securing-paas\WebApp\FourthCoffeeAPI_KeyVault\FourthCoffeeAPI\bin\Microsoft.Azure.KeyVault.WebKey.dll
 C:\github\mcw-securing-paas\WebApp\FourthCoffeeAPI_KeyVault\FourthCoffeeAPI\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
 C:\github\mcw-securing-paas\WebApp\FourthCoffeeAPI_KeyVault\FourthCoffeeAPI\bin\Microsoft.IdentityModel.Clients.ActiveDirectory.dll
-C:\github\mcw-securing-paas\WebApp\FourthCoffeeAPI_KeyVault\FourthCoffeeAPI\bin\Microsoft.IdentityModel.Clients.ActiveDirectory.WindowsForms.dll
 C:\github\mcw-securing-paas\WebApp\FourthCoffeeAPI_KeyVault\FourthCoffeeAPI\bin\Microsoft.Rest.ClientRuntime.Azure.dll
 C:\github\mcw-securing-paas\WebApp\FourthCoffeeAPI_KeyVault\FourthCoffeeAPI\bin\Microsoft.Rest.ClientRuntime.dll
 C:\github\mcw-securing-paas\WebApp\FourthCoffeeAPI_KeyVault\FourthCoffeeAPI\bin\Microsoft.Web.Infrastructure.dll
@@ -209,3 +208,7 @@ C:\github\mcw-securing-paas\WebApp\FourthCoffeeAPI_KeyVault\FourthCoffeeAPI\bin\
 C:\github\mcw-securing-paas\WebApp\FourthCoffeeAPI_KeyVault\FourthCoffeeAPI\bin\Microsoft.AI.ServerTelemetryChannel.xml
 C:\github\mcw-securing-paas\WebApp\FourthCoffeeAPI_KeyVault\FourthCoffeeAPI\bin\Microsoft.AI.WindowsServer.xml
 C:\github\mcw-securing-paas\WebApp\FourthCoffeeAPI_KeyVault\FourthCoffeeAPI\bin\Microsoft.AI.Web.xml
+C:\github\mcw-securing-paas\WebApp\FourthCoffeeAPI_KeyVault\FourthCoffeeAPI\obj\Debug\FourthCoffeeAPI.csproj.CopyComplete
+C:\github\mcw-securing-paas\WebApp\FourthCoffeeAPI_KeyVault\FourthCoffeeAPI\bin\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll
+C:\github\mcw-securing-paas\WebApp\FourthCoffeeAPI_KeyVault\FourthCoffeeAPI\bin\Microsoft.SqlServer.Management.AlwaysEncrypted.AzureKeyVaultProvider.dll
+C:\github\mcw-securing-paas\WebApp\FourthCoffeeAPI_KeyVault\FourthCoffeeAPI\bin\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.xml

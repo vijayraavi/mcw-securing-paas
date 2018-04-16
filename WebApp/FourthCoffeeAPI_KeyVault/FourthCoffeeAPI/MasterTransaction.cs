@@ -32,6 +32,7 @@ namespace FourthCoffeeAPI
         public Nullable<System.DateTime> ModifyDate { get; set; }
         public Nullable<System.DateTime> CreateDate { get; set; }
     
+        public virtual Customer Customer { get; set; }
         public virtual Location Location { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RefundTransaction> RefundTransactions { get; set; }
@@ -39,6 +40,5 @@ namespace FourthCoffeeAPI
         public virtual ICollection<Transaction> Transactions { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<VoidTransaction> VoidTransactions { get; set; }
-        public virtual Customer Customer { get; set; }
     }
 }

@@ -5,27 +5,28 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="53465f57370449639ec867065032417c" Name="Diagram1">
-        <EntityTypeShape EntityType="FourthCoffeeModel.CustomerAccount" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FourthCoffeeModel.Location" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FourthCoffeeModel.RefundTransaction" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FourthCoffeeModel.Transaction" Width="1.5" PointX="2.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FourthCoffeeModel.User" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FourthCoffeeModel.UserProfile" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FourthCoffeeModel.VoidTransaction" Width="1.5" PointX="6.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FourthCoffeeModel.MasterTransaction" Width="1.5" PointX="7" PointY="8.125" />
-        <AssociationConnector Association="FourthCoffeeModel.FK_Transaction_CustomerAccount" />
+        <EntityTypeShape EntityType="FourthCoffeeModel.ApplicationLog" Width="1.5" PointX="9.75" PointY="1.25" />
+        <EntityTypeShape EntityType="FourthCoffeeModel.Customer" Width="1.5" PointX="3" PointY="5" />
+        <EntityTypeShape EntityType="FourthCoffeeModel.Location" Width="1.5" PointX="3" PointY="0.75" />
+        <EntityTypeShape EntityType="FourthCoffeeModel.MasterTransaction" Width="1.5" PointX="5.25" PointY="4.5" />
+        <EntityTypeShape EntityType="FourthCoffeeModel.RefundTransaction" Width="1.5" PointX="7.5" PointY="3.125" />
+        <EntityTypeShape EntityType="FourthCoffeeModel.Transaction" Width="1.5" PointX="7.5" PointY="6.375" />
+        <EntityTypeShape EntityType="FourthCoffeeModel.User" Width="1.5" PointX="0.75" PointY="7.125" />
+        <EntityTypeShape EntityType="FourthCoffeeModel.UserProfile" Width="1.5" PointX="3" PointY="8.875" />
+        <EntityTypeShape EntityType="FourthCoffeeModel.VoidTransaction" Width="1.5" PointX="9.75" PointY="4.5" />
+        <AssociationConnector Association="FourthCoffeeModel.FK_Customer_User" />
+        <AssociationConnector Association="FourthCoffeeModel.FK_MasterTransaction_Customer" />
+        <AssociationConnector Association="FourthCoffeeModel.FK_Transaction_Customer" />
         <AssociationConnector Association="FourthCoffeeModel.FK_MasterTransaction_Location" />
         <AssociationConnector Association="FourthCoffeeModel.FK_RefundTransaction_MasterTransaction" />
         <AssociationConnector Association="FourthCoffeeModel.FK_Transaction_MasterTransaction" />
         <AssociationConnector Association="FourthCoffeeModel.FK_VoidTransaction_MasterTransaction" />
         <AssociationConnector Association="FourthCoffeeModel.FK_VoidTransaction_RefundTransaction" />
         <AssociationConnector Association="FourthCoffeeModel.FK_UserProfile_User" />
-        <EntityTypeShape EntityType="FourthCoffeeModel.Customer" Width="1.5" PointX="7" PointY="12.625" />
-        <AssociationConnector Association="FourthCoffeeModel.FK_Customer_User" />
+        <EntityTypeShape EntityType="FourthCoffeeModel.CustomerAccount" Width="1.5" PointX="5.25" PointY="9.5" />
         <AssociationConnector Association="FourthCoffeeModel.FK_CustomerAccount_Customer" />
-        <AssociationConnector Association="FourthCoffeeModel.FK_MasterTransaction_Customer" />
-        <AssociationConnector Association="FourthCoffeeModel.FK_Transaction_Customer" />
-      </Diagram>
+        <AssociationConnector Association="FourthCoffeeModel.FK_Transaction_CustomerAccount" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

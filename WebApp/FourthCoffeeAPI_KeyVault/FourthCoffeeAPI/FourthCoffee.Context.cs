@@ -25,14 +25,15 @@ namespace FourthCoffeeAPI
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<CustomerAccount> CustomerAccounts { get; set; }
+        public virtual DbSet<ApplicationLog> ApplicationLogs { get; set; }
+        public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Location> Locations { get; set; }
+        public virtual DbSet<MasterTransaction> MasterTransactions { get; set; }
         public virtual DbSet<RefundTransaction> RefundTransactions { get; set; }
         public virtual DbSet<Transaction> Transactions { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserProfile> UserProfiles { get; set; }
         public virtual DbSet<VoidTransaction> VoidTransactions { get; set; }
-        public virtual DbSet<MasterTransaction> MasterTransactions { get; set; }
-        public virtual DbSet<Customer> Customers { get; set; }
+        public virtual DbSet<CustomerAccount> CustomerAccounts { get; set; }
     }
 }

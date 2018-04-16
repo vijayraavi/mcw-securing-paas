@@ -32,8 +32,8 @@ namespace FourthCoffeeAPI
         public System.DateTime ModifyDate { get; set; }
         public System.DateTime CreateDate { get; set; }
     
+        public virtual Customer Customer { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Transaction> Transactions { get; set; }
-        public virtual Customer Customer { get; set; }
     }
 }

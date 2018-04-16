@@ -19,11 +19,11 @@ namespace FourthCoffeeAPI
         public string LastName { get; set; }
         public string Address1 { get; set; }
         public string Address2 { get; set; }
-        public System.DateTime ModifyDate { get; set; }
-        public System.DateTime CreateDate { get; set; }
         public string City { get; set; }
         public string State { get; set; }
         public string ZipCode { get; set; }
+        public System.DateTime ModifyDate { get; set; }
+        public System.DateTime CreateDate { get; set; }
     
         public virtual User User { get; set; }
     }

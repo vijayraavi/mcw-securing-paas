@@ -21,8 +21,6 @@ namespace FourthCoffeeAPI
         }
     
         public System.Guid LocationId { get; set; }
-        public System.DateTime ModifyDate { get; set; }
-        public System.DateTime CreateDate { get; set; }
         public string LongName { get; set; }
         public string ShortName { get; set; }
         public string Address1 { get; set; }
@@ -30,6 +28,8 @@ namespace FourthCoffeeAPI
         public string City { get; set; }
         public string State { get; set; }
         public string ZipCode { get; set; }
+        public System.DateTime ModifyDate { get; set; }
+        public System.DateTime CreateDate { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MasterTransaction> MasterTransactions { get; set; }

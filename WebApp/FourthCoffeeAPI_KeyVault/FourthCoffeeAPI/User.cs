@@ -22,12 +22,12 @@ namespace FourthCoffeeAPI
     
         public System.Guid UserId { get; set; }
         public string Username { get; set; }
+        public string Password { get; set; }
         public System.DateTime ModifyDate { get; set; }
         public System.DateTime CreateDate { get; set; }
-        public string Password { get; set; }
     
-        public virtual UserProfile UserProfile { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Customer> Customers { get; set; }
+        public virtual UserProfile UserProfile { get; set; }
     }
 }

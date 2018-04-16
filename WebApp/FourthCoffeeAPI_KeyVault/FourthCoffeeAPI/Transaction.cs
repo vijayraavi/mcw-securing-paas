@@ -29,8 +29,8 @@ namespace FourthCoffeeAPI
         public Nullable<System.DateTime> ModifyDate { get; set; }
         public Nullable<System.DateTime> CreateDate { get; set; }
     
-        public virtual CustomerAccount CustomerAccount { get; set; }
-        public virtual MasterTransaction MasterTransaction { get; set; }
         public virtual Customer Customer { get; set; }
+        public virtual MasterTransaction MasterTransaction { get; set; }
+        public virtual CustomerAccount CustomerAccount { get; set; }
     }
 }

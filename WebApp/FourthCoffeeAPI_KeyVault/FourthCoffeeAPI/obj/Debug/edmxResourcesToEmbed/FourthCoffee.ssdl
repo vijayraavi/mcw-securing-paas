@@ -1,5 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="FourthCoffeeModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="ApplicationLog">
+    <Key>
+      <PropertyRef Name="ApplicationLogId" />
+    </Key>
+    <Property Name="ApplicationLogId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="MessageType" Type="nvarchar" MaxLength="50" />
+    <Property Name="Definition" Type="nvarchar" MaxLength="50" />
+    <Property Name="LogDate" Type="nvarchar" MaxLength="50" />
+    <Property Name="MessageCode" Type="int" />
+    <Property Name="ModifyDate" Type="datetime" />
+    <Property Name="CreateDate" Type="datetime" />
+  </EntityType>
   <EntityType Name="Customer">
     <Key>
       <PropertyRef Name="CustomerId" />
@@ -251,6 +263,7 @@
     </ReferentialConstraint>
   </Association>
   <EntityContainer Name="FourthCoffeeModelStoreContainer">
+    <EntitySet Name="ApplicationLog" EntityType="Self.ApplicationLog" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="CustomerAccount" EntityType="Self.CustomerAccount" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Location" EntityType="Self.Location" Schema="dbo" store:Type="Tables" />

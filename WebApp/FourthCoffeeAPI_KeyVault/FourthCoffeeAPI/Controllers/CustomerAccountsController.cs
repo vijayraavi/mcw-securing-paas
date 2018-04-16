@@ -19,7 +19,7 @@ namespace FourthCoffeeAPI.Controllers
 
         static CustomerAccountsController()
         {
-            const string metaData = "res://*/Model1.csdl|res://*/Model1.ssdl|res://*/Model1.msl";
+            const string metaData = "res://*/FourthCoffee.csdl|res://*/FourthCoffee.ssdl|res://*/FourthCoffee.msl";
             const string appName = "EntityFramework";
             const string providerName = "System.Data.SqlClient";
 
@@ -33,7 +33,7 @@ namespace FourthCoffeeAPI.Controllers
 
         // GET: api/CustomerAccounts
         public IQueryable<CustomerAccount> GetCustomerAccounts()
-        {
+        {            
             return db.CustomerAccounts;
         }
 
